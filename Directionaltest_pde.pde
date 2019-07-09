@@ -9,7 +9,7 @@
  */
 
 void setup() {
-  size(640, 360, P3D);
+  size(1920, 1080, P3D);
   noStroke();
   fill(204);
 }
