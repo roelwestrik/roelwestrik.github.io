@@ -1,6 +1,5 @@
+sudo:          false
 language:      node_js
-git:
-  depth:       3
 node_js:
   - "node"
 install:       npm install
@@ -10,5 +9,3 @@ script:
 cache:
   directories:
     - node_modules
-notifications:
-  email:       false
