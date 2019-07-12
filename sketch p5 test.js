@@ -13,23 +13,41 @@ var SmallRadius = [];
 
 var NumberOctaves = 6;
 var Octave = [27.5, 41.2, 30.9, 46.2, 69.3, 51.9, 38.9, 29.1, 43.7, 32.7, 50, 36.7];
-var PitchList = ['A', 'E', 'B', 'Fsharp', 'Csharp', 'Aflat', 'Eflat', 'Bflat', 'F', 'C', 'G', 'D'];
+var PitchList = ['A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D'];
 
 var arrayXsum = [];
 var arrayYsum = [];
-var arraysumLength = 2;
+var arraysumLength = 100;
 
-var hue = 0;
-var sat = 0;
+var arrayBrightness = [];
+var avgBrightness = 0;
+
+var Hue = 0;
+var Sat = 0;
+var Brightness = 0;
 
 var chaserPosX = 0;
 var chaserPosY = 0;
 var chaserSpeedX = 0;
 var chaserSpeedY = 0;
+
+var arrayKeyX = [];
+var arrayKeyY = [];
+
+var KeyXsum = 0;
+var KeyYsum = 0;
+var angleKey = 0;
+
+//==================BEHAVIOUS VARIABLES=====================//
+var arraysumLength = 100;
 var chaserSmoothing = 50;
+var arrayKeyLength = 500;
+var chaserSmoothing = 20;
 
 function setup() {
   createCanvas(1280, 720);
+  textAlign(CENTER, CENTER);
+  strokeCap(SQUARE);
 
   mic = new p5.AudioIn();
   mic.start();
@@ -53,11 +71,6 @@ function draw() {
   background(0);
   angleMode(RADIANS);
   translate(width/2, height/2);
-
-  colorMode(HSB, 255, 255, 255);
-  fill(hue, sat, 128);
-  stroke(255);
-  ellipse (0,0,MainRadius+20);
 
   //==================FFT ANALYSIS=====================//
   var spectrum = fft.analyze();
@@ -102,17 +115,6 @@ function draw() {
   var Ysum = 0;
   var amplitudeSum = Amplitude.reduce(getSum);
 
-  for (var i=0; i<=11; i++){
-    SmallRadius[i] = Amplitude[i]*50;
-
-    colorMode(RGB,255);
-    stroke(255,255,255);
-    fill(255,255,255);
-    ellipse (XCoordinatesSetup[i], YCoordinatesSetup[i], SmallRadius[i]);
-    text(PitchList[i], TextLocX[i], TextLocY[i]);
-    // text(PitchList[i] + " : " + round(Amplitude[i]*100)/100, TextLocX[i], TextLocY[i]);
-  }
-
   if (amplitudeSum > 0.0001){
     for (var i=0; i<=11; i++){
       Xsum = Xsum + (Amplitude[i] * XCoordinatesSetup[i]);
@@ -125,27 +127,42 @@ function draw() {
     Ysum = 0;
   }
   
-  //==================STORE LAST MAX NOT WORKING YET=====================//
+  //==================STORE LAST PITCH & BRIGHTNESS=====================//
   arrayXsum.push(Xsum);
   arrayYsum.push(Ysum);
-
-  arraysumLength = 50;
+  arrayBrightness.push(fft.getCentroid());
 
   if(arrayXsum.length > arraysumLength || arrayYsum.length > arraysumLength){
     arrayXsum.splice(0, arrayXsum.length-arraysumLength);
     arrayYsum.splice(0, arrayYsum.length-arraysumLength);
+    arrayBrightness.splice(0, arrayBrightness.length-arraysumLength);
   }
 
   Xsum = arrayXsum.reduce(getSum) / arrayXsum.length;
   Ysum = arrayYsum.reduce(getSum) / arrayYsum.length;
+  avgBrightness = arrayBrightness.reduce(getSum) / arrayBrightness.length;
 
-  fill(255);
-  ellipse (Xsum, Ysum, 10);
+  avgBrightness = map(avgBrightness, 0, 4000, 0, 1);
+  avgBrightness = sqrt(avgBrightness);
+  avgBrightness = avgBrightness*4000;
 
-  //==================DRAW CHASER=====================//
+  //==================GET KEY=====================//
+  arrayKeyX.push(Xsum);
+  arrayKeyY.push(Ysum);
+
+  if(arrayKeyX.length > arrayKeyLength || arrayKeyY > arrayKeyLength){
+    arrayKeyX.splice(0, arrayKeyX.length-arrayKeyLength);
+    arrayKeyY.splice(0, arrayKeyY.length-arrayKeyLength);
+  }
+
+  keyXsum = arrayKeyX.reduce(getSum) / arrayKeyX.length;
+  keyYsum = arrayKeyY.reduce(getSum) / arrayKeyY.length;
+
+  angleKey = atan2(keyXsum - 0, keyYsum - 0);
+
+  //==================GET CHASER=====================//
   var dX = Xsum - chaserPosX;
   var dY = Ysum - chaserPosY;
-  var chaserSmoothing = 10;
 
   chaserSpeedX = dX/chaserSmoothing;
   chaserSpeedY = dY/chaserSmoothing;
@@ -153,25 +170,54 @@ function draw() {
   chaserPosX = chaserPosX + chaserSpeedX;
   chaserPosY = chaserPosY + chaserSpeedY;
 
+  angle = atan2(chaserPosX - 0, chaserPosY - 0);
+
+  //==================THIS WAS THE GOAL=====================//
+  Hue = map(angle , PI, PI*-1, 0, 255);
+  Sat = map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 255);
+  Brightness = map(avgBrightness, 0, 4000, 0, 255);
+
+  //==================DRAW STUFF=====================//
+  colorMode(HSB, 255, 255, 255);
+  fill(Hue, Sat, Brightness);
+  stroke(255);
+  ellipse (0,0,MainRadius+20);
+
+  for (var i=0; i<=11; i++){
+    SmallRadius[i] = Amplitude[i]*50;
+
+    colorMode(RGB,255);
+    stroke(255,255,255);
+    fill(255,255,255);
+    ellipse (XCoordinatesSetup[i], YCoordinatesSetup[i], SmallRadius[i]);
+    text(PitchList[i], TextLocX[i], TextLocY[i]);
+  }
+
+  fill(255);
+  ellipse (Xsum, Ysum, 10);
+
+  noFill();
+  stroke(255);
+  rotate(angleKey*-1);
+  ellipse(0,MainRadius/2+20, 40);
+  line(0,0,0,MainRadius/2);
+  rotate(angleKey);
+
   fill(255);
   ellipse (chaserPosX, chaserPosY, 10);
   noFill();
   stroke(255);
   ellipse (chaserPosX, chaserPosY, 20);
 
-  angle = atan2(chaserPosX - 0, chaserPosY - 0);
-  hue = map(angle , PI, PI*-1, 0, 255);
-  sat = map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 255);
-
   line(0, 0, chaserPosX, chaserPosY);
 
   var a = dist(0,0,chaserPosX,chaserPosY);
+  strokeWeight(5);
   arc(0, 0, abs(a)*2, abs(a)*2, 0-HALF_PI, (angle*-1)+HALF_PI);
-  //==================DRAW LAST SHAPES=====================//
-  // noFill();
-  // stroke(255);
-  // ellipse (0,0,25);
-
+  strokeWeight(1);
+  arc(0, 0, abs(a)*2-20, abs(a)*2-20, 0-HALF_PI, HALF_PI+(angleKey*-1));
+  line(0,0,0,-a);
+  
   //==================PRINT FOR DEBUG=====================//
   print(Amplitude);
 
