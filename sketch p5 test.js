@@ -52,6 +52,7 @@ var keySmoothing = 400;
 var PeakSensitivity = 50;
 var MicSensitivity = 1;
 var micCutoff = 0.01;
+var BrightnessSensitivity = 1;
 
 //=========Display=========//
 var TrailLength = 120;
@@ -170,7 +171,7 @@ function draw() {
   avgBrightness = arrayBrightness.reduce(getSum) / arrayBrightness.length;
 
   avgBrightness = map(avgBrightness, 0, 4000, 0, 1);
-  avgBrightness = sqrt(avgBrightness);
+  avgBrightness = pow(avgBrightness, 1/BrightnessSensitivity);
   avgBrightness = avgBrightness*4000;
 
   var anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
