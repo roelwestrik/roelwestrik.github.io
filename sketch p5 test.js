@@ -18,11 +18,6 @@ var pointerSmoothing = 100;
 var arrayBrightness = [];
 var avgBrightness = 0;
 
-var arrayVertex = [];
-var arrayKeyAngle = [];
-var arrayChaserAngle = [];
-var arrayPointerAngle = [];
-
 var Hue = 0;
 var Sat = 0;
 var Brightness = 0;
@@ -37,13 +32,6 @@ var arrayChaserPosY = [];
 var KeyPosX = 0;
 var KeyPosY = 0;
 
-var AngleArray = [];
-var arrayKeyY = [];
-
-var KeyXsum = 0;
-var KeyYsum = 0;
-var angleKey = 0;
-
 //==================VARIABLES=====================//
 //=========Behavioural=========//
 var pointerSmoothing = 50;
@@ -54,7 +42,6 @@ var MicSensitivity = 1;
 var micCutoff = 0.01;
 
 //=========Display=========//
-var TrailLength = 120;
 var MainRadius = 400;
 var offset = 20;
 var TextSize = 16;
@@ -81,8 +68,6 @@ function setup() {
     TextLocX[j]=(MainRadius/2+offset*2)*sin((j*TWO_PI)/12);
     TextLocY[j]=(MainRadius/2+offset*2)*-cos((j*TWO_PI)/12);
   }
-
-  noLoop();
 }
 
 function draw() {
@@ -90,69 +75,65 @@ function draw() {
   background(0);
   angleMode(RADIANS);
   translate(width/2, height/2);
+  
+  //==================FFT ANALYSIS=====================//
+  var spectrum = fft.analyze();
+  micLevel = mic.getLevel();
+  
+  micLevel = pow(micLevel, 1/MicSensitivity);
+  
+  for (var i=0; i<=11; i++){
+    Amplitude[i] = 0;
 
-  if(started){
-    
-    //==================FFT ANALYSIS=====================//
-    var spectrum = fft.analyze();
-    micLevel = mic.getLevel();
-    
-    micLevel = pow(micLevel, 1/MicSensitivity);
-    
+    for (var j=0; j<NumberOctaves; j++){
+      Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
+    }
+
+    Amplitude[i] = Amplitude[i] / NumberOctaves;
+    Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
+  }
+
+  //==================BOUNDS TO POWER REMAPPER=====================//
+  var maxValue = Amplitude[0];
+  var maxIndex = 0;
+  var amplitudeSum = Amplitude.reduce(getSum);
+
+  for (var i=0; i<=11; i++) {
+    if (Amplitude[i] > maxValue) {
+      maxIndex = i;
+      maxValue = Amplitude[i];
+    }
+  }
+
+  if (micLevel > micCutoff){
     for (var i=0; i<=11; i++){
-      Amplitude[i] = 0;
-
-      for (var j=0; j<NumberOctaves; j++){
-        Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
-      }
-
-      Amplitude[i] = Amplitude[i] / NumberOctaves;
-      Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
+      Amplitude[i]=map(Amplitude[i], 0, maxValue, 0, 1);
+      Amplitude[i]=pow(Amplitude[i], PeakSensitivity);
+      Amplitude[i]=map(Amplitude[i], 0, 1, 0, maxValue);
     }
-
-    //==================BOUNDS TO POWER REMAPPER=====================//
-    var maxValue = Amplitude[0];
-    var maxIndex = 0;
-    var amplitudeSum = Amplitude.reduce(getSum);
-
-    for (var i=0; i<=11; i++) {
-      if (Amplitude[i] > maxValue) {
-        maxIndex = i;
-        maxValue = Amplitude[i];
-      }
-    }
-
-    if (micLevel > micCutoff){
-      for (var i=0; i<=11; i++){
-        Amplitude[i]=map(Amplitude[i], 0, maxValue, 0, 1);
-        Amplitude[i]=pow(Amplitude[i], PeakSensitivity);
-        Amplitude[i]=map(Amplitude[i], 0, 1, 0, maxValue);
-      }
-      } else {
-        for (var i=0; i<=11; i++){
-          Amplitude[i]=0;
-        }
-      }
-    
-    //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
-    var PointerPosX = 0;
-    var PointerPosY = 0;
-    var amplitudeSum = Amplitude.reduce(getSum);
-    
-    if (micLevel > micCutoff){
-      for (var i=0; i<=11; i++){
-        PointerPosX = PointerPosX + (Amplitude[i] * XCoordinatesSetup[i]);
-        PointerPosY = PointerPosY + (Amplitude[i] * YCoordinatesSetup[i]);
-      }
-      PointerPosX = PointerPosX/amplitudeSum;
-      PointerPosY = PointerPosY/amplitudeSum;
-      arrayBrightness.push(fft.getCentroid());
     } else {
-      PointerPosX = 0;
-      PointerPosY = 0;
-      arrayBrightness.push(0);
+      for (var i=0; i<=11; i++){
+        Amplitude[i]=0;
+      }
     }
-
+  
+  //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
+  var PointerPosX = 0;
+  var PointerPosY = 0;
+  var amplitudeSum = Amplitude.reduce(getSum);
+  
+  if (micLevel > micCutoff){
+    for (var i=0; i<=11; i++){
+      PointerPosX = PointerPosX + (Amplitude[i] * XCoordinatesSetup[i]);
+      PointerPosY = PointerPosY + (Amplitude[i] * YCoordinatesSetup[i]);
+    }
+    PointerPosX = PointerPosX/amplitudeSum;
+    PointerPosY = PointerPosY/amplitudeSum;
+    arrayBrightness.push(fft.getCentroid());
+  } else {
+    PointerPosX = 0;
+    PointerPosY = 0;
+    arrayBrightness.push(0);
   }
     
   //==================MOVING AVERAGES=====================//
@@ -286,9 +267,4 @@ function getSum(total, num) {
 
 function windowResized() {
   resizeCanvas(windowWidth-50, windowHeight-50);
-}
-
-function start(){
-  started = true;
-  loop();
 }
