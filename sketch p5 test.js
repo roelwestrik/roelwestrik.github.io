@@ -10,6 +10,7 @@ var TextLocX = [];
 var TextLocY = [];
 
 var Amplitude = [];
+var AmplitudeMap = [];
 
 var arrayPointerPosX = [];
 var arrayPointerPosY = [];
@@ -34,23 +35,22 @@ var KeyPosY = 0;
 
 //==================VARIABLES=====================//
 //=========Behavioural=========//
-var pointerSmoothing = 50;
+var pointerSmoothing = 100;
 var chaserSmoothing = 50;
 var keySmoothing = 400;
 
 var PeakSensitivity = 50;
-var MicSensitivity = 1;
+var MicSensitivity = 2;
 var BrightnessSensitivity = 1;
 
-var micCutoff = 0.0001;
-
-var maxHz = 5000;
+var micCutoff = 0.1;
+var freqCutoff = 1000;
 
 //=========Display=========//
 var MainRadius = 400;
 var offset = 20;
 var TextSize = 16;
-var MaxPitchRadius = 30;
+var MaxPitchRadius = 50;
 
 function setup() {
   createCanvas(windowWidth-10, windowHeight-20);
@@ -113,28 +113,28 @@ function draw() {
 
   if (amplitudeSum > micCutoff){
     for (var i=0; i<=11; i++){
-      Amplitude[i]=map(Amplitude[i], 0, maxValue, 0, 1);
-      Amplitude[i]=pow(Amplitude[i], PeakSensitivity);
-      Amplitude[i]=map(Amplitude[i], 0, 1, 0, maxValue);
+      AmplitudeMap[i]=map(Amplitude[i], 0, maxValue, 0, 1);
+      AmplitudeMap[i]=pow(AmplitudeMap[i], PeakSensitivity);
+      AmplitudeMap[i]=map(AmplitudeMap[i], 0, 1, 0, maxValue);
     }
     } else {
       for (var i=0; i<=11; i++){
-        Amplitude[i]=0;
+        AmplitudeMap[i]=0;
       }
     }
-    print(Amplitude[0]);
+
   //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
   var PointerPosX = 0;
   var PointerPosY = 0;
-  var amplitudeSum = Amplitude.reduce(getSum);
+  var amplitudeSumMap = AmplitudeMap.reduce(getSum);
   
   if (amplitudeSum > micCutoff){
     for (var i=0; i<=11; i++){
-      PointerPosX = PointerPosX + (Amplitude[i] * XCoordinatesSetup[i]);
-      PointerPosY = PointerPosY + (Amplitude[i] * YCoordinatesSetup[i]);
+      PointerPosX = PointerPosX + (AmplitudeMap[i] * XCoordinatesSetup[i]);
+      PointerPosY = PointerPosY + (AmplitudeMap[i] * YCoordinatesSetup[i]);
     }
-    PointerPosX = PointerPosX/amplitudeSum;
-    PointerPosY = PointerPosY/amplitudeSum;
+    PointerPosX = PointerPosX/amplitudeSumMap;
+    PointerPosY = PointerPosY/amplitudeSumMap;
     arrayBrightness.push(fft.getCentroid());
   } else {
     PointerPosX = 0;
@@ -158,7 +158,7 @@ function draw() {
 
   avgBrightness = map(avgBrightness, 0, 4000, 0, 1);
   avgBrightness = pow(avgBrightness, 1/BrightnessSensitivity);
-  avgBrightness = min(avgBrightness*maxHz, maxHz);
+  avgBrightness = min(avgBrightness*freqCutoff, freqCutoff);
 
   var anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
 
@@ -192,17 +192,17 @@ function draw() {
   //==================THIS WAS THE GOAL=====================//
   Hue = map(angleChaser , PI, PI*-1, 0, 255);
   Sat = map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 255);
-  Brightness = map(avgBrightness, 0, maxHz, 0, 255);
+  Brightness = map(avgBrightness, 0, freqCutoff, 0, 255);
 
   textAlign(LEFT);
   fill(255);
   stroke(255);
   text("VALUES: ", MainRadius, MainRadius/2-TextSize*9);
   noStroke();
-  text("HUE: " + int(Hue*100)/100 + " /255", MainRadius,MainRadius/2-TextSize*7);
-  text("SATURATION: " + int(Sat*100)/100 + " /255", MainRadius,MainRadius/2-TextSize*5);
-  text("BRIGHTNESS: " + int(Brightness*100)/100 + " /255", MainRadius,MainRadius/2-TextSize*3);
-  text("MIC VOLUME: " + int(micLevel*100)/100 + " /1.00", MainRadius,MainRadius/2);
+  text("HUE: " + int(Hue) + " /255", MainRadius,MainRadius/2-TextSize*7);
+  text("SATURATION: " + int(Sat) + " /255", MainRadius,MainRadius/2-TextSize*5);
+  text("BRIGHTNESS: " + int(Brightness) + " /255", MainRadius,MainRadius/2-TextSize*3);
+  text("MIC VOLUME: " + int(amplitudeSum*100/12)/100 + " /1.00", MainRadius,MainRadius/2);
 
   //==================DRAW STUFF=====================//
   //=========Main Circle=========//
@@ -218,7 +218,7 @@ function draw() {
     colorMode(255);
     noStroke();
     fill(255);
-    ellipse (XCoordinatesSetup[i], YCoordinatesSetup[i], Amplitude[i]*MaxPitchRadius);
+    ellipse (XCoordinatesSetup[i], YCoordinatesSetup[i], AmplitudeMap[i]*MaxPitchRadius);
     text(PitchList[i], TextLocX[i], TextLocY[i]);
   }
 
@@ -246,8 +246,8 @@ function draw() {
 
   //=========Star=========//
   for (i=0;i<=11;i++){
-  stroke(255,Amplitude[i]*255);
-  strokeWeight(Amplitude[i]*3);
+  stroke(255,AmplitudeMap[i]*255);
+  strokeWeight(AmplitudeMap[i]*3);
   line(XCoordinatesSetup[i], YCoordinatesSetup[i], PointerPosX, PointerPosY);
 }
 
