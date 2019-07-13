@@ -49,10 +49,11 @@ var TextSize = 16;
 var MaxPitchRadius = 30;
 
 function setup() {
-  createCanvas(windowWidth-50, windowHeight-50);
+  createCanvas(windowWidth-10, windowHeight-20);
   textAlign(CENTER, CENTER);
   strokeCap(SQUARE);
   textSize(TextSize);
+  angleMode(RADIANS);
 
   mic = new p5.AudioIn();
   mic.start();
@@ -74,8 +75,7 @@ function setup() {
 function draw() {
   frameRate(144);
   background(0);
-  angleMode(RADIANS);
-  translate(width/2, height/2);
+  translate(width/2-100, height/2);
   
   //==================FFT ANALYSIS=====================//
   var spectrum = fft.analyze();
@@ -187,6 +187,15 @@ function draw() {
   Hue = map(angleChaser , PI, PI*-1, 0, 255);
   Sat = map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 255);
   Brightness = map(avgBrightness, 0, 4000, 0, 255);
+
+  textAlign(LEFT);
+  fill(255);
+  stroke(255);
+  text("VALUES: ", MainRadius, 0);
+  noStroke();
+  text("HUE: " + int(Hue*100)/100 + " /255", MainRadius,TextSize*2);
+  text("SATURATION: " + int(Sat*100)/100 + " /255", MainRadius,TextSize*4);
+  text("BRIGHTNESS: " + int(Brightness*100)/100 + " /255", MainRadius,TextSize*6);
 
   //==================DRAW STUFF=====================//
   //=========Main Circle=========//
