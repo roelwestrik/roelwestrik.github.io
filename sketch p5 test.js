@@ -22,6 +22,9 @@ var arraysumLength = 100;
 var arrayBrightness = [];
 var avgBrightness = 0;
 
+var arrayVertex = [];
+var arrayKeyAngle = [];
+
 var Hue = 0;
 var Sat = 0;
 var Brightness = 0;
@@ -43,9 +46,10 @@ var arraysumLength = 100;
 var chaserSmoothing = 50;
 var arrayKeyLength = 500;
 var chaserSmoothing = 20;
+var TrailLength = 120;
 
 function setup() {
-  createCanvas(1280, 720);
+  createCanvas(windowWidth-50, windowHeight-50);
   textAlign(CENTER, CENTER);
   strokeCap(SQUARE);
 
@@ -74,6 +78,7 @@ function draw() {
 
   //==================FFT ANALYSIS=====================//
   var spectrum = fft.analyze();
+  var micLevel = mic.getLevel();
   
   for (var i=0; i<=11; i++){
     Amplitude[i] = 0;
@@ -110,7 +115,7 @@ function draw() {
       }
     }
   
-  //==================CHECK SUM & DRAW 12 ELIPSES=====================//
+  //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
   var Xsum = 0;
   var Ysum = 0;
   var amplitudeSum = Amplitude.reduce(getSum);
@@ -127,11 +132,11 @@ function draw() {
     Ysum = 0;
   }
   
-  //==================STORE LAST PITCH & BRIGHTNESS=====================//
+  //==================MOVING AVERAGES=====================//
   arrayXsum.push(Xsum);
   arrayYsum.push(Ysum);
   arrayBrightness.push(fft.getCentroid());
-
+   
   if(arrayXsum.length > arraysumLength || arrayYsum.length > arraysumLength){
     arrayXsum.splice(0, arrayXsum.length-arraysumLength);
     arrayYsum.splice(0, arrayYsum.length-arraysumLength);
@@ -213,16 +218,48 @@ function draw() {
 
   var a = dist(0,0,chaserPosX,chaserPosY);
   strokeWeight(5);
-  arc(0, 0, abs(a)*2, abs(a)*2, 0-HALF_PI, (angle*-1)+HALF_PI);
+  arc(0, 0, max(abs(a)*2,0), max(abs(a)*2,0), 0-HALF_PI, (angle*-1)+HALF_PI);
   strokeWeight(1);
-  arc(0, 0, abs(a)*2-20, abs(a)*2-20, 0-HALF_PI, HALF_PI+(angleKey*-1));
+  arc(0, 0, max(abs(a)*2-20,0), max(abs(a)*2-20,0), 0-HALF_PI, HALF_PI+(angleKey*-1));
+  arc(0, 0, max(abs(a)*2-40,0), max(abs(a)*2-40,0), HALF_PI+(angleKey*-1), (angle*-1)+HALF_PI);
   line(0,0,0,-a);
+
+  micLevel = pow(micLevel, 0.15);
+  micLevel = micLevel*50;
+  noStroke();
+  fill(255);
+  ellipse(0,0,micLevel);
+  stroke(255);
+  noFill();
+  ellipse(0,0,micLevel*2);
+
+  //==================DRAW TRAILS=====================//
+  if(millis() > 1000){
+    arrayKeyAngle.push(angleKey);
+
+    if(arrayKeyAngle.length > TrailLength){
+      arrayKeyAngle.splice(0, arrayKeyAngle.length-TrailLength);
+    }
   
+    noFill();
+    strokeWeight(4);
+    beginShape();
+    for(i=0;i<arrayKeyAngle.length;i++){
+      vertex(250*(sin(arrayKeyAngle[i])), 250*(cos(arrayKeyAngle[i])));
+    }  
+    endShape();
+    strokeWeight(1);
+  }
+
   //==================PRINT FOR DEBUG=====================//
-  print(Amplitude);
+  print(arrayKeyAngle.length);
 
 }
 
 function getSum(total, num) {
   return total + num;
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth-50, windowHeight-50);
 }
