@@ -81,6 +81,8 @@ function setup() {
     TextLocX[j]=(MainRadius/2+offset*2)*sin((j*TWO_PI)/12);
     TextLocY[j]=(MainRadius/2+offset*2)*-cos((j*TWO_PI)/12);
   }
+
+  noLoop();
 }
 
 function draw() {
@@ -88,71 +90,75 @@ function draw() {
   background(0);
   angleMode(RADIANS);
   translate(width/2, height/2);
-  
-  //==================FFT ANALYSIS=====================//
-  var spectrum = fft.analyze();
-  micLevel = mic.getLevel();
-  
-  micLevel = pow(micLevel, 1/MicSensitivity);
-  
-  for (var i=0; i<=11; i++){
-    Amplitude[i] = 0;
 
-    for (var j=0; j<NumberOctaves; j++){
-      Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
-    }
-
-    Amplitude[i] = Amplitude[i] / NumberOctaves;
-    Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
-  }
-
-  //==================BOUNDS TO POWER REMAPPER=====================//
-  var maxValue = Amplitude[0];
-  var maxIndex = 0;
-  var amplitudeSum = Amplitude.reduce(getSum);
-
-  for (var i=0; i<=11; i++) {
-    if (Amplitude[i] > maxValue) {
-      maxIndex = i;
-      maxValue = Amplitude[i];
-    }
-  }
-
-  if (micLevel > micCutoff){
+  if(started){
+    
+    //==================FFT ANALYSIS=====================//
+    var spectrum = fft.analyze();
+    micLevel = mic.getLevel();
+    
+    micLevel = pow(micLevel, 1/MicSensitivity);
+    
     for (var i=0; i<=11; i++){
-      Amplitude[i]=map(Amplitude[i], 0, maxValue, 0, 1);
-      Amplitude[i]=pow(Amplitude[i], PeakSensitivity);
-      Amplitude[i]=map(Amplitude[i], 0, 1, 0, maxValue);
+      Amplitude[i] = 0;
+
+      for (var j=0; j<NumberOctaves; j++){
+        Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
+      }
+
+      Amplitude[i] = Amplitude[i] / NumberOctaves;
+      Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
     }
-    } else {
-      for (var i=0; i<=11; i++){
-        Amplitude[i]=0;
+
+    //==================BOUNDS TO POWER REMAPPER=====================//
+    var maxValue = Amplitude[0];
+    var maxIndex = 0;
+    var amplitudeSum = Amplitude.reduce(getSum);
+
+    for (var i=0; i<=11; i++) {
+      if (Amplitude[i] > maxValue) {
+        maxIndex = i;
+        maxValue = Amplitude[i];
       }
     }
-  
-  //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
-  var PointerPosX = 0;
-  var PointerPosY = 0;
-  var amplitudeSum = Amplitude.reduce(getSum);
-  
-  if (micLevel > micCutoff){
-    for (var i=0; i<=11; i++){
-      PointerPosX = PointerPosX + (Amplitude[i] * XCoordinatesSetup[i]);
-      PointerPosY = PointerPosY + (Amplitude[i] * YCoordinatesSetup[i]);
+
+    if (micLevel > micCutoff){
+      for (var i=0; i<=11; i++){
+        Amplitude[i]=map(Amplitude[i], 0, maxValue, 0, 1);
+        Amplitude[i]=pow(Amplitude[i], PeakSensitivity);
+        Amplitude[i]=map(Amplitude[i], 0, 1, 0, maxValue);
+      }
+      } else {
+        for (var i=0; i<=11; i++){
+          Amplitude[i]=0;
+        }
+      }
+    
+    //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
+    var PointerPosX = 0;
+    var PointerPosY = 0;
+    var amplitudeSum = Amplitude.reduce(getSum);
+    
+    if (micLevel > micCutoff){
+      for (var i=0; i<=11; i++){
+        PointerPosX = PointerPosX + (Amplitude[i] * XCoordinatesSetup[i]);
+        PointerPosY = PointerPosY + (Amplitude[i] * YCoordinatesSetup[i]);
+      }
+      PointerPosX = PointerPosX/amplitudeSum;
+      PointerPosY = PointerPosY/amplitudeSum;
+      arrayBrightness.push(fft.getCentroid());
+    } else {
+      PointerPosX = 0;
+      PointerPosY = 0;
+      arrayBrightness.push(0);
     }
-    PointerPosX = PointerPosX/amplitudeSum;
-    PointerPosY = PointerPosY/amplitudeSum;
-    arrayBrightness.push(fft.getCentroid());
-  } else {
-    PointerPosX = 0;
-    PointerPosY = 0;
-    arrayBrightness.push(0);
+
   }
-  
+    
   //==================MOVING AVERAGES=====================//
   arrayPointerPosX.push(PointerPosX);
   arrayPointerPosY.push(PointerPosY);
-     
+    
   if(arrayPointerPosX.length > pointerSmoothing || arrayPointerPosY.length > pointerSmoothing){
     arrayPointerPosX.splice(0, arrayPointerPosX.length-pointerSmoothing);
     arrayPointerPosY.splice(0, arrayPointerPosY.length-pointerSmoothing);
@@ -218,24 +224,17 @@ function draw() {
     text(PitchList[i], TextLocX[i], TextLocY[i]);
   }
 
-  //=========1 Seeker=========//
+  //=========Seeker=========//
   fill(255);
   ellipse (PointerPosX, PointerPosY, 10);
 
-  //=========1 Chaser=========//
+  //=========Chaser=========//
   fill(255);
   ellipse (chaserPosX, chaserPosY, 10);
   noFill();
   strokeWeight(1);
   stroke(255);
   ellipse (chaserPosX, chaserPosY, 20);
-
-  //=========Star=========//
-  for (i=0;i<=11;i++){
-    stroke(255,Amplitude[i]*255);
-    strokeWeight(Amplitude[i]*3);
-    line(XCoordinatesSetup[i], YCoordinatesSetup[i], PointerPosX, PointerPosY);
-  }
 
   //=========Key Pointer=========//
   noFill();
@@ -246,6 +245,13 @@ function draw() {
   line(0,0,0,MainRadius/2+offset*2-TextSize);
   line(0,MainRadius/2+offset*2+TextSize, 0, MainRadius/2+offset*4);
   rotate(angleKey);
+
+  //=========Star=========//
+  for (i=0;i<=11;i++){
+  stroke(255,Amplitude[i]*255);
+  strokeWeight(Amplitude[i]*3);
+  line(XCoordinatesSetup[i], YCoordinatesSetup[i], PointerPosX, PointerPosY);
+}
 
   //=========Arcs=========//
   var a = dist(0,0,chaserPosX,chaserPosY);
@@ -271,7 +277,7 @@ function draw() {
 
   //==================PRINT FOR DEBUG=====================//
   // print(micLevel);
-
+  
 }
 
 function getSum(total, num) {
@@ -280,4 +286,9 @@ function getSum(total, num) {
 
 function windowResized() {
   resizeCanvas(windowWidth-50, windowHeight-50);
+}
+
+function start(){
+  started = true;
+  loop();
 }
