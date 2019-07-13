@@ -37,11 +37,14 @@ var KeyPosY = 0;
 var pointerSmoothing = 50;
 var chaserSmoothing = 50;
 var keySmoothing = 400;
+
 var PeakSensitivity = 50;
 var MicSensitivity = 1;
-var micCutoff = 0.01;
 var BrightnessSensitivity = 1;
-var maxHz = 10000;
+
+var micCutoff = 0.0001;
+
+var maxHz = 5000;
 
 //=========Display=========//
 var MainRadius = 400;
@@ -56,7 +59,7 @@ function setup() {
   textSize(TextSize);
   angleMode(RADIANS);
 
-  mic = new p5.AudioIn([errorCallback]);
+  mic = new p5.AudioIn();
   mic.start();
 
   fft = new p5.FFT();
@@ -73,10 +76,6 @@ function setup() {
   }
 }
 
-function errorCallback(){
-  text("YEA YOU FUCKED UP SON", 0, 0);
-}
-
 function draw() {
   frameRate(144);
   background(0);
@@ -87,9 +86,10 @@ function draw() {
   micLevel = mic.getLevel();
   micLevel = pow(micLevel, 1/MicSensitivity);
   
+  
   for (var i=0; i<=11; i++){
     Amplitude[i] = 0;
-
+    
     for (var j=0; j<NumberOctaves; j++){
       Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
     }
@@ -98,6 +98,7 @@ function draw() {
     Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
   }
 
+  
   //==================BOUNDS TO POWER REMAPPER=====================//
   var maxValue = Amplitude[0];
   var maxIndex = 0;
@@ -110,7 +111,7 @@ function draw() {
     }
   }
 
-  if (micLevel > micCutoff){
+  if (amplitudeSum > micCutoff){
     for (var i=0; i<=11; i++){
       Amplitude[i]=map(Amplitude[i], 0, maxValue, 0, 1);
       Amplitude[i]=pow(Amplitude[i], PeakSensitivity);
@@ -121,13 +122,13 @@ function draw() {
         Amplitude[i]=0;
       }
     }
-  
+    print(Amplitude[0]);
   //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
   var PointerPosX = 0;
   var PointerPosY = 0;
   var amplitudeSum = Amplitude.reduce(getSum);
   
-  if (micLevel > micCutoff){
+  if (amplitudeSum > micCutoff){
     for (var i=0; i<=11; i++){
       PointerPosX = PointerPosX + (Amplitude[i] * XCoordinatesSetup[i]);
       PointerPosY = PointerPosY + (Amplitude[i] * YCoordinatesSetup[i]);
@@ -140,7 +141,7 @@ function draw() {
     PointerPosY = 0;
     arrayBrightness.push(0);
   }
-    
+
   //==================MOVING AVERAGES=====================//
   arrayPointerPosX.push(PointerPosX);
   arrayPointerPosY.push(PointerPosY);
@@ -161,6 +162,7 @@ function draw() {
 
   var anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
 
+  
   //==================GET CHASER=====================//
   var dX = PointerPosX - chaserPosX;
   var dY = PointerPosY - chaserPosY;
@@ -195,11 +197,12 @@ function draw() {
   textAlign(LEFT);
   fill(255);
   stroke(255);
-  text("VALUES: ", MainRadius, 0);
+  text("VALUES: ", MainRadius, MainRadius/2-TextSize*9);
   noStroke();
-  text("HUE: " + int(Hue*100)/100 + " /255", MainRadius,TextSize*2);
-  text("SATURATION: " + int(Sat*100)/100 + " /255", MainRadius,TextSize*4);
-  text("BRIGHTNESS: " + int(Brightness*100)/100 + " /255", MainRadius,TextSize*6);
+  text("HUE: " + int(Hue*100)/100 + " /255", MainRadius,MainRadius/2-TextSize*7);
+  text("SATURATION: " + int(Sat*100)/100 + " /255", MainRadius,MainRadius/2-TextSize*5);
+  text("BRIGHTNESS: " + int(Brightness*100)/100 + " /255", MainRadius,MainRadius/2-TextSize*3);
+  text("MIC VOLUME: " + int(micLevel*100)/100 + " /1.00", MainRadius,MainRadius/2);
 
   //==================DRAW STUFF=====================//
   //=========Main Circle=========//
@@ -212,9 +215,9 @@ function draw() {
 
   //=========1 Circle for 12 Pitches=========//
   for (var i=0; i<=11; i++){
-    colorMode(RGB,255);
+    colorMode(255);
     noStroke();
-    fill(255,255,255);
+    fill(255);
     ellipse (XCoordinatesSetup[i], YCoordinatesSetup[i], Amplitude[i]*MaxPitchRadius);
     text(PitchList[i], TextLocX[i], TextLocY[i]);
   }
