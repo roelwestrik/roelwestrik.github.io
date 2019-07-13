@@ -41,6 +41,7 @@ var PeakSensitivity = 50;
 var MicSensitivity = 1;
 var micCutoff = 0.01;
 var BrightnessSensitivity = 1;
+var maxHz = 10000;
 
 //=========Display=========//
 var MainRadius = 400;
@@ -55,7 +56,7 @@ function setup() {
   textSize(TextSize);
   angleMode(RADIANS);
 
-  mic = new p5.AudioIn();
+  mic = new p5.AudioIn([errorCallback]);
   mic.start();
 
   fft = new p5.FFT();
@@ -72,6 +73,10 @@ function setup() {
   }
 }
 
+function errorCallback(){
+  text("YEA YOU FUCKED UP SON", 0, 0);
+}
+
 function draw() {
   frameRate(144);
   background(0);
@@ -80,7 +85,6 @@ function draw() {
   //==================FFT ANALYSIS=====================//
   var spectrum = fft.analyze();
   micLevel = mic.getLevel();
-  
   micLevel = pow(micLevel, 1/MicSensitivity);
   
   for (var i=0; i<=11; i++){
@@ -153,7 +157,7 @@ function draw() {
 
   avgBrightness = map(avgBrightness, 0, 4000, 0, 1);
   avgBrightness = pow(avgBrightness, 1/BrightnessSensitivity);
-  avgBrightness = avgBrightness*4000;
+  avgBrightness = min(avgBrightness*maxHz, maxHz);
 
   var anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
 
@@ -186,7 +190,7 @@ function draw() {
   //==================THIS WAS THE GOAL=====================//
   Hue = map(angleChaser , PI, PI*-1, 0, 255);
   Sat = map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 255);
-  Brightness = map(avgBrightness, 0, 4000, 0, 255);
+  Brightness = map(avgBrightness, 0, maxHz, 0, 255);
 
   textAlign(LEFT);
   fill(255);
