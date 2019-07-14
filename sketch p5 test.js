@@ -1,4 +1,6 @@
 var mic;  
+var micLevel = 0;
+var testON = 0;
 
 var NumberOctaves = 6;
 var Octave = [27.5, 41.2, 30.9, 46.2, 69.3, 51.9, 38.9, 29.1, 43.7, 32.7, 50, 36.7];
@@ -59,11 +61,13 @@ function setup() {
   textSize(TextSize);
   angleMode(RADIANS);
 
-  mic = new p5.AudioIn();
-  mic.start();
+  var audioContext = getAudioContext();
 
-  fft = new p5.FFT();
-  fft.setInput(mic);
+  // mic = new p5.AudioIn();
+  // mic.start();
+
+  // fft = new p5.FFT();
+  // fft.setInput(mic);
 
   for (var i=0; i<=11; i++){
     XCoordinatesSetup[i]=(MainRadius/2-offset)*sin((i*TWO_PI)/12);
@@ -74,207 +78,231 @@ function setup() {
     TextLocX[j]=(MainRadius/2+offset*2)*sin((j*TWO_PI)/12);
     TextLocY[j]=(MainRadius/2+offset*2)*-cos((j*TWO_PI)/12);
   }
+
+  // testON = 0;
 }
+
+function touchStarted() {
+  // if(keyCode == ENTER){
+    mic = new p5.AudioIn();
+    mic.start();
+
+    fft = new p5.FFT();
+    fft.setInput(mic);
+
+    if (testON == 0){
+      testON = 1;
+    }
+
+    if (getAudioContext().state !== 'running') {
+      getAudioContext().resume();
+    }
+  }
+// }
 
 function draw() {
   frameRate(144);
   background(0);
   translate(width/2-100, height/2);
   
-  //==================FFT ANALYSIS=====================//
-  var spectrum = fft.analyze();
-  micLevel = mic.getLevel();
-  micLevel = pow(micLevel, 1/MicSensitivity);
-  
-  
-  for (var i=0; i<=11; i++){
-    Amplitude[i] = 0;
-    
-    for (var j=0; j<NumberOctaves; j++){
-      Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
-    }
-
-    Amplitude[i] = Amplitude[i] / NumberOctaves;
-    Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
-  }
-
-  
-  //==================BOUNDS TO POWER REMAPPER=====================//
-  var maxValue = Amplitude[0];
-  var maxIndex = 0;
-  var amplitudeSum = Amplitude.reduce(getSum);
-
-  for (var i=0; i<=11; i++) {
-    if (Amplitude[i] > maxValue) {
-      maxIndex = i;
-      maxValue = Amplitude[i];
-    }
-  }
-
-  if (amplitudeSum > micCutoff){
+  if (int(testON) == 0) {
+    fill(255);
+    noStroke();
+    text('Press/Touch anywhere to start.', 0, 0);
+  } else {
+    //==================FFT ANALYSIS=====================//
+    var spectrum = fft.analyze();
+    micLevel = mic.getLevel();
+    micLevel = pow(micLevel, 1/MicSensitivity);
+        
     for (var i=0; i<=11; i++){
-      AmplitudeMap[i]=map(Amplitude[i], 0, maxValue, 0, 1);
-      AmplitudeMap[i]=pow(AmplitudeMap[i], PeakSensitivity);
-      AmplitudeMap[i]=map(AmplitudeMap[i], 0, 1, 0, maxValue);
+      Amplitude[i] = 0;
+      
+      for (var j=0; j<NumberOctaves; j++){
+        Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
+      }
+
+      Amplitude[i] = Amplitude[i] / NumberOctaves;
+      Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
     }
-    } else {
-      for (var i=0; i<=11; i++){
-        AmplitudeMap[i]=0;
+
+    
+    //==================BOUNDS TO POWER REMAPPER=====================//
+    var maxValue = Amplitude[0];
+    var maxIndex = 0;
+    var amplitudeSum = Amplitude.reduce(getSum);
+
+    for (var i=0; i<=11; i++) {
+      if (Amplitude[i] > maxValue) {
+        maxIndex = i;
+        maxValue = Amplitude[i];
       }
     }
 
-  //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
-  var PointerPosX = 0;
-  var PointerPosY = 0;
-  var amplitudeSumMap = AmplitudeMap.reduce(getSum);
-  
-  if (amplitudeSum > micCutoff){
-    for (var i=0; i<=11; i++){
-      PointerPosX = PointerPosX + (AmplitudeMap[i] * XCoordinatesSetup[i]);
-      PointerPosY = PointerPosY + (AmplitudeMap[i] * YCoordinatesSetup[i]);
-    }
-    PointerPosX = PointerPosX/amplitudeSumMap;
-    PointerPosY = PointerPosY/amplitudeSumMap;
-    arrayBrightness.push(fft.getCentroid());
-  } else {
-    PointerPosX = 0;
-    PointerPosY = 0;
-    arrayBrightness.push(0);
-  }
+    if (amplitudeSum > micCutoff){
+      for (var i=0; i<=11; i++){
+        AmplitudeMap[i]=map(Amplitude[i], 0, maxValue, 0, 1);
+        AmplitudeMap[i]=pow(AmplitudeMap[i], PeakSensitivity);
+        AmplitudeMap[i]=map(AmplitudeMap[i], 0, 1, 0, maxValue);
+      }
+      } else {
+        for (var i=0; i<=11; i++){
+          AmplitudeMap[i]=0;
+        }
+      }
 
-  //==================MOVING AVERAGES=====================//
-  arrayPointerPosX.push(PointerPosX);
-  arrayPointerPosY.push(PointerPosY);
+    //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
+    var PointerPosX = 0;
+    var PointerPosY = 0;
+    var amplitudeSumMap = AmplitudeMap.reduce(getSum);
     
-  if(arrayPointerPosX.length > pointerSmoothing || arrayPointerPosY.length > pointerSmoothing){
-    arrayPointerPosX.splice(0, arrayPointerPosX.length-pointerSmoothing);
-    arrayPointerPosY.splice(0, arrayPointerPosY.length-pointerSmoothing);
-    arrayBrightness.splice(0, arrayBrightness.length-pointerSmoothing);
-  }
+    if (amplitudeSum > micCutoff){
+      for (var i=0; i<=11; i++){
+        PointerPosX = PointerPosX + (AmplitudeMap[i] * XCoordinatesSetup[i]);
+        PointerPosY = PointerPosY + (AmplitudeMap[i] * YCoordinatesSetup[i]);
+      }
+      PointerPosX = PointerPosX/amplitudeSumMap;
+      PointerPosY = PointerPosY/amplitudeSumMap;
+      arrayBrightness.push(fft.getCentroid());
+    } else {
+      PointerPosX = 0;
+      PointerPosY = 0;
+      arrayBrightness.push(0);
+    }
 
-  PointerPosX = arrayPointerPosX.reduce(getSum) / arrayPointerPosX.length;
-  PointerPosY = arrayPointerPosY.reduce(getSum) / arrayPointerPosY.length;
-  avgBrightness = arrayBrightness.reduce(getSum) / arrayBrightness.length;
+    //==================MOVING AVERAGES=====================//
+    arrayPointerPosX.push(PointerPosX);
+    arrayPointerPosY.push(PointerPosY);
+      
+    if(arrayPointerPosX.length > pointerSmoothing || arrayPointerPosY.length > pointerSmoothing){
+      arrayPointerPosX.splice(0, arrayPointerPosX.length-pointerSmoothing);
+      arrayPointerPosY.splice(0, arrayPointerPosY.length-pointerSmoothing);
+      arrayBrightness.splice(0, arrayBrightness.length-pointerSmoothing);
+    }
 
-  avgBrightness = map(avgBrightness, 0, 4000, 0, 1);
-  avgBrightness = pow(avgBrightness, 1/BrightnessSensitivity);
-  avgBrightness = min(avgBrightness*freqCutoff, freqCutoff);
+    PointerPosX = arrayPointerPosX.reduce(getSum) / arrayPointerPosX.length;
+    PointerPosY = arrayPointerPosY.reduce(getSum) / arrayPointerPosY.length;
+    avgBrightness = arrayBrightness.reduce(getSum) / arrayBrightness.length;
 
-  var anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
+    avgBrightness = map(avgBrightness, 0, 4000, 0, 1);
+    avgBrightness = pow(avgBrightness, 1/BrightnessSensitivity);
+    avgBrightness = min(avgBrightness*freqCutoff, freqCutoff);
 
-  
-  //==================GET CHASER=====================//
-  var dX = PointerPosX - chaserPosX;
-  var dY = PointerPosY - chaserPosY;
+    var anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
 
-  chaserSpeedX = dX/chaserSmoothing;
-  chaserSpeedY = dY/chaserSmoothing;
+    
+    //==================GET CHASER=====================//
+    var dX = PointerPosX - chaserPosX;
+    var dY = PointerPosY - chaserPosY;
 
-  chaserPosX = chaserPosX + chaserSpeedX;
-  chaserPosY = chaserPosY + chaserSpeedY;
+    chaserSpeedX = dX/chaserSmoothing;
+    chaserSpeedY = dY/chaserSmoothing;
 
-  var angleChaser = atan2(chaserPosX - 0, chaserPosY - 0);
+    chaserPosX = chaserPosX + chaserSpeedX;
+    chaserPosY = chaserPosY + chaserSpeedY;
 
-  //==================GET KEY BY COORDINATES=====================//
-  arrayChaserPosX.push(chaserPosX);
-  arrayChaserPosY.push(chaserPosY);
+    var angleChaser = atan2(chaserPosX - 0, chaserPosY - 0);
 
-  if(arrayChaserPosX.length > keySmoothing || arrayChaserPosY.length > keySmoothing){
-    arrayChaserPosX.splice(0, arrayChaserPosX.length-keySmoothing);
-    arrayChaserPosY.splice(0, arrayChaserPosY.length-keySmoothing);
-  }
+    //==================GET KEY BY COORDINATES=====================//
+    arrayChaserPosX.push(chaserPosX);
+    arrayChaserPosY.push(chaserPosY);
 
-  KeyPosX = arrayChaserPosX.reduce(getSum) / arrayChaserPosX.length;
-  KeyPosY = arrayChaserPosY.reduce(getSum) / arrayChaserPosY.length;
+    if(arrayChaserPosX.length > keySmoothing || arrayChaserPosY.length > keySmoothing){
+      arrayChaserPosX.splice(0, arrayChaserPosX.length-keySmoothing);
+      arrayChaserPosY.splice(0, arrayChaserPosY.length-keySmoothing);
+    }
 
-  var angleKey = atan2(KeyPosX - 0, KeyPosY - 0);
+    KeyPosX = arrayChaserPosX.reduce(getSum) / arrayChaserPosX.length;
+    KeyPosY = arrayChaserPosY.reduce(getSum) / arrayChaserPosY.length;
 
-  //==================THIS WAS THE GOAL=====================//
-  Hue = map(angleChaser , PI, PI*-1, 0, 255);
-  Sat = map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 255);
-  Brightness = map(avgBrightness, 0, freqCutoff, 0, 255);
+    var angleKey = atan2(KeyPosX - 0, KeyPosY - 0);
 
-  textAlign(LEFT);
-  fill(255);
-  stroke(255);
-  text("VALUES: ", MainRadius, MainRadius/2-TextSize*9);
-  noStroke();
-  text("HUE: " + int(Hue) + " /255", MainRadius,MainRadius/2-TextSize*7);
-  text("SATURATION: " + int(Sat) + " /255", MainRadius,MainRadius/2-TextSize*5);
-  text("BRIGHTNESS: " + int(Brightness) + " /255", MainRadius,MainRadius/2-TextSize*3);
-  text("MIC VOLUME: " + int(amplitudeSum*100/12)/100 + " /1.00", MainRadius,MainRadius/2);
+    //==================THIS WAS THE GOAL=====================//
+    Hue = map(angleChaser , PI, PI*-1, 0, 255);
+    Sat = map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 255);
+    Brightness = map(avgBrightness, 0, freqCutoff, 0, 255);
 
-  //==================DRAW STUFF=====================//
-  //=========Main Circle=========//
-  colorMode(HSB, 255, 255, 255);
-  fill(Hue, Sat, Brightness);
-  noStroke();
-  ellipse (0,0,MainRadius+offset);
-  fill(255);
-  ellipse(0,0,5);
-
-  //=========1 Circle for 12 Pitches=========//
-  for (var i=0; i<=11; i++){
-    colorMode(255);
-    noStroke();
+    textAlign(LEFT);
     fill(255);
-    ellipse (XCoordinatesSetup[i], YCoordinatesSetup[i], AmplitudeMap[i]*MaxPitchRadius);
-    text(PitchList[i], TextLocX[i], TextLocY[i]);
-  }
+    stroke(255);
+    text("VALUES: ", MainRadius, MainRadius/2-TextSize*9);
+    noStroke();
+    text("HUE: " + int(Hue) + " /255", MainRadius,MainRadius/2-TextSize*7);
+    text("SATURATION: " + int(Sat) + " /255", MainRadius,MainRadius/2-TextSize*5);
+    text("BRIGHTNESS: " + int(Brightness) + " /255", MainRadius,MainRadius/2-TextSize*3);
+    text("MIC VOLUME: " + int(amplitudeSum*100/12)/100 + " /1.00", MainRadius,MainRadius/2);
 
-  //=========Seeker=========//
-  fill(255);
-  ellipse (PointerPosX, PointerPosY, 10);
+    //==================DRAW STUFF=====================//
+    //=========Main Circle=========//
+    colorMode(HSB, 255, 255, 255);
+    fill(Hue, Sat, Brightness);
+    noStroke();
+    ellipse (0,0,MainRadius+offset);
+    fill(255);
+    ellipse(0,0,5);
 
-  //=========Chaser=========//
-  fill(255);
-  ellipse (chaserPosX, chaserPosY, 10);
-  noFill();
-  strokeWeight(1);
-  stroke(255);
-  ellipse (chaserPosX, chaserPosY, 20);
+    //=========1 Circle for 12 Pitches=========//
+    for (var i=0; i<=11; i++){
+      noStroke();
+      fill(255);
+      ellipse (XCoordinatesSetup[i], YCoordinatesSetup[i], AmplitudeMap[i]*MaxPitchRadius);
+      text(PitchList[i], TextLocX[i], TextLocY[i]);
+    }
 
-  //=========Key Pointer=========//
-  noFill();
-  stroke(255);
-  strokeWeight(1);
-  rotate(angleKey*-1);
-  ellipse(0,MainRadius/2+offset*2, TextSize*2);
-  line(0,0,0,MainRadius/2+offset*2-TextSize);
-  line(0,MainRadius/2+offset*2+TextSize, 0, MainRadius/2+offset*4);
-  rotate(angleKey);
+    //=========Seeker=========//
+    fill(255);
+    ellipse (PointerPosX, PointerPosY, 10);
 
-  //=========Star=========//
-  for (i=0;i<=11;i++){
-  stroke(255,AmplitudeMap[i]*255);
-  strokeWeight(AmplitudeMap[i]*3);
-  line(XCoordinatesSetup[i], YCoordinatesSetup[i], PointerPosX, PointerPosY);
-}
+    //=========Chaser=========//
+    fill(255);
+    ellipse (chaserPosX, chaserPosY, 10);
+    noFill();
+    strokeWeight(1);
+    stroke(255);
+    ellipse (chaserPosX, chaserPosY, 20);
 
-  //=========Arcs=========//
-  var a = dist(0,0,chaserPosX,chaserPosY);
-  noFill();
-  stroke(255);
-  strokeWeight(5);
-  arc(0, 0, max(abs(a)*2,0), max(abs(a)*2,0), 0-HALF_PI, (angleChaser*-1)+HALF_PI);
-  strokeWeight(1);
-  arc(0, 0, max(abs(a)*2-20,0), max(abs(a)*2-20,0), 0-HALF_PI, HALF_PI+(angleKey*-1));
-  arc(0, 0, max(abs(a)*2-40,0), max(abs(a)*2-40,0), HALF_PI+(angleKey*-1), (angleChaser*-1)+HALF_PI);
-  
-  line(0,0,0,-a);
-  line(0, 0, chaserPosX, chaserPosY);
+    //=========Key Pointer=========//
+    noFill();
+    stroke(255);
+    strokeWeight(1);
+    rotate(angleKey*-1);
+    ellipse(0,MainRadius/2+offset*2, TextSize*2);
+    line(0,0,0,MainRadius/2+offset*2-TextSize);
+    line(0,MainRadius/2+offset*2+TextSize, 0, MainRadius/2+offset*4);
+    rotate(angleKey);
 
-  //=========Volume Thing=========//
-  // micLevel = micLevel*MainRadius/(MicSensitivity);
-  // noStroke();
-  // fill(255);
-  // ellipse(0,0,micLevel);
-  // stroke(255);
-  // noFill();
-  // ellipse(0,0,micLevel*2);
+    //=========Star=========//
+    for (i=0;i<=11;i++){
+    stroke(255,AmplitudeMap[i]*255);
+    strokeWeight(AmplitudeMap[i]*3);
+    line(XCoordinatesSetup[i], YCoordinatesSetup[i], PointerPosX, PointerPosY);
+    }
 
-  //==================PRINT FOR DEBUG=====================//
-  // print(micLevel);
+    //=========Arcs=========//
+    var a = dist(0,0,chaserPosX,chaserPosY);
+    noFill();
+    stroke(255);
+    strokeWeight(5);
+    arc(0, 0, max(abs(a)*2,0), max(abs(a)*2,0), 0-HALF_PI, (angleChaser*-1)+HALF_PI);
+    strokeWeight(1);
+    arc(0, 0, max(abs(a)*2-20,0), max(abs(a)*2-20,0), 0-HALF_PI, HALF_PI+(angleKey*-1));
+    arc(0, 0, max(abs(a)*2-40,0), max(abs(a)*2-40,0), HALF_PI+(angleKey*-1), (angleChaser*-1)+HALF_PI);
+    
+    line(0,0,0,-a);
+    line(0, 0, chaserPosX, chaserPosY);
+
+    //=========Volume Thing=========//
+    // micLevel = micLevel*MainRadius/(MicSensitivity);
+    // noStroke();
+    // fill(255);
+    // ellipse(0,0,micLevel);
+    // stroke(255);
+    // noFill();
+    // ellipse(0,0,micLevel*2);
+
+    //==================PRINT FOR DEBUG=====================//
+    // print(micLevel);
+  } 
   
 }
 
