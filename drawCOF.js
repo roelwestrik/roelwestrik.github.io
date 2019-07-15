@@ -13,7 +13,7 @@ function drawCOF () {
     text("MIC VOLUME: " + int(amplitudeSum*100/12)/100 + " /1.00", MainRadius,0+TextSize*6);
 
     //=========HSB Circles=========//
-    colorMode(HSB, 255, 255, 255);
+    colorMode(HSB, 255, 255, 255, 1);
     fill(Hue, 127, 127);
     ellipse (MainRadius-TextSize,0,TextSize/1.5);
     fill(0, Sat, 127);
