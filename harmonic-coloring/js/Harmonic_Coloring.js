@@ -127,6 +127,10 @@ function mousePressed() {
   } 
 }
 
+function touchStarted() {
+  mousePressed();
+}
+
 function draw() {
   frameRate(144);
   background(0);
