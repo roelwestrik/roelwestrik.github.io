@@ -77,18 +77,12 @@ var offset = 20;
 var TextSize = 16;
 var maxPitchRadius = 50;
 
-function preload() {
-  mainFont = loadFont('../../fonts/D-DIN.otf');
-  mainFontbold = loadFont('../../fonts/D-DIN-bold.otf');
-}
-
 function setup() {
   createCanvas(windowWidth-10, windowHeight-20);
   textAlign(CENTER, CENTER);
   strokeCap(SQUARE);
   textSize(TextSize);
   angleMode(RADIANS);
-  textFont(mainFont);
 
   var audioContext = getAudioContext();
 
@@ -133,10 +127,8 @@ function draw() {
     noStroke();
     textSize(TextSize*1.5);
     textAlign(LEFT, CENTER);
-    textFont(mainFontbold);
     text('Press/Touch anywhere to start.', -200, 0);
     textSize(TextSize);
-    textFont(mainFont);
     text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 50);
         
   } else {

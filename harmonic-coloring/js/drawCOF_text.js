@@ -5,9 +5,7 @@ function drawCOF_text () {
     textAlign(LEFT);
     fill(255);
     noStroke();
-    textFont(mainFontbold);
     text("VALUES: ", MainRadius, 0-TextSize*2);
-    textFont(mainFont);
     text("HUE: " + int(Hue) + " /255", MainRadius,0);
     text("SATURATION: " + int(Sat) + " /255", MainRadius,0+TextSize*1.5);
     text("BRIGHTNESS: " + int(Brightness) + " /255", MainRadius,0+TextSize*3);
