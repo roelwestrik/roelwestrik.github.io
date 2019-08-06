@@ -6,8 +6,6 @@ var NumberOctaves = 6;
 var Octave = [27.5, 41.2, 30.9, 46.2, 69.3, 51.9, 38.9, 29.1, 43.7, 32.7, 50, 36.7];
 var PitchList = ['A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D'];
 
-var mainFont;
-
 var XCoordinatesSetup = [];
 var YCoordinatesSetup = [];
 var TextLocX = [];
@@ -43,20 +41,21 @@ var Sat = 0;
 var Brightness = 0;
 
 var KeyTrail = [0,0];
-var KeyTrailLength = 200;
+var KeyTrailLength = 400;
 var ChaserTrail = [];
-var ChaserTrailLength = 200;
+var ChaserTrailLength = 50;
 var PointerTrail = [];
-var PointerTrailLength = 200;
+var PointerTrailLength = 100;
 
-var Button1;
-var VanillaON = 1
-var Button2;
-var ArcsON = 0
-var Button3;
-var DashboardON = 0
-var Button4;
+//==================BUTTONS AND SLIDERS=====================//
+//=========Sliders=========//
+var psmoothSlider;
+var csmoothSlider;
+var ksmoothSlider;
 
+var peakSlider;
+var micSlider;
+var brightnessSlider;
 
 //==================VARIABLES=====================//
 //=========Behavioural=========//
@@ -64,12 +63,12 @@ var pointerSmoothing = 100;
 var chaserSmoothing = 50;
 var keySmoothing = 400;
 
-var PeakSensitivity = 50;
-var MicSensitivity = 2;
-var BrightnessSensitivity = 1;
+// var PeakSensitivity = 50;
+// var MicSensitivity = 2;
+// var BrightnessSensitivity = 1;
 
 var micCutoff = 0.1;
-var freqCutoff = 1000;
+var freqCutoff = 4100;
 
 //=========Display=========//
 var MainRadius = 400;
@@ -111,6 +110,20 @@ function mousePressed() {
   if (getAudioContext().state !== 'running') {
     getAudioContext().resume();
     }
+
+    peakSlider = createSlider(0, 50, 25, 0.1);
+    peakSlider.position(20, 20);
+    brightnessSlider = createSlider(0, 1, 0.5, 0.01);
+    brightnessSlider.position(20, 50);
+    micSlider = createSlider(0, 10, 5, 0.1);
+    micSlider.position(20, 80);
+
+    psmoothSlider = createSlider(1, 500, 250, 1);
+    psmoothSlider.position(20, 130);
+    csmoothSlider = createSlider(1, 500, 250, 1);
+    csmoothSlider.position(20, 160);
+    ksmoothSlider = createSlider(1, 500, 250, 1);
+    ksmoothSlider.position(20, 190);
   } 
 }
 
@@ -142,6 +155,16 @@ function draw() {
     fill(255);
     ellipse(0,0,5);
 
+    translate(-(width/2-(MainRadius/2)), -(height/2));
+    textAlign(LEFT, CENTER);
+    text("peak sensitivity: " + peakSlider.value(), peakSlider.x + peakSlider.width * 1.1, peakSlider.y+TextSize/4);
+    text("brightness sensitivity: " + brightnessSlider.value(), brightnessSlider.x + brightnessSlider.width * 1.1, brightnessSlider.y+TextSize/4);
+    text("mic sensitivity: " + micSlider.value(), micSlider.x + micSlider.width * 1.1, micSlider.y+TextSize/4);
+
+    text("pointer smoothing: " + psmoothSlider.value(), psmoothSlider.x + psmoothSlider.width * 1.1, psmoothSlider.y+TextSize/4);
+    text("chaser smoothing: " + csmoothSlider.value(), csmoothSlider.x + csmoothSlider.width * 1.1, csmoothSlider.y+TextSize/4);
+    text("key smoothing: " + ksmoothSlider.value(), ksmoothSlider.x + ksmoothSlider.width * 1.1, ksmoothSlider.y+TextSize/4);
+    translate(width/2-(MainRadius/2), height/2);
     //=========Draw Modules=========//
     drawCOF_text();
 

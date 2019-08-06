@@ -9,7 +9,11 @@ function drawCOF_text () {
     text("HUE: " + int(Hue) + " /255", MainRadius,0);
     text("SATURATION: " + int(Sat) + " /255", MainRadius,0+TextSize*1.5);
     text("BRIGHTNESS: " + int(Brightness) + " /255", MainRadius,0+TextSize*3);
-    text("MIC VOLUME: " + int(amplitudeSum*100/12)/100 + " /1.00", MainRadius,0+TextSize*6);
+
+    MicSensitivity = micSlider.value();
+    micLevel = mic.getLevel();
+    micLevel = pow(micLevel, 1/MicSensitivity);
+    text("MIC VOLUME: " + round(micLevel*100)/100 + " /1.00", MainRadius,0+TextSize*6);
 
     //=========HSB Circles=========//
     colorMode(HSB, 255, 255, 255, 1);

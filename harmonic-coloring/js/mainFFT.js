@@ -2,8 +2,6 @@ function mainFFT(){
   
   //==================FFT ANALYSIS=====================//
   var spectrum = fft.analyze();
-  micLevel = mic.getLevel();
-  micLevel = pow(micLevel, 1/MicSensitivity);
       
   for (var i=0; i<=11; i++){
     Amplitude[i] = 0;
@@ -21,6 +19,7 @@ function mainFFT(){
   var maxValue = Amplitude[0];
   var maxIndex = 0;
   amplitudeSum = Amplitude.reduce(getSum);
+  PeakSensitivity = peakSlider.value();
 
   for (var i=0; i<=11; i++) {
     if (Amplitude[i] > maxValue) {
@@ -63,6 +62,8 @@ function mainFFT(){
   //==================MOVING AVERAGES=====================//
   arrayPointerPosX.push(PointerPosX);
   arrayPointerPosY.push(PointerPosY);
+  BrightnessSensitivity = brightnessSlider.value();
+  pointerSmoothing = psmoothSlider.value();
     
   if(arrayPointerPosX.length > pointerSmoothing || arrayPointerPosY.length > pointerSmoothing){
     arrayPointerPosX.splice(0, arrayPointerPosX.length-pointerSmoothing);
@@ -84,6 +85,7 @@ function mainFFT(){
   //==================GET CHASER=====================//
   var dX = PointerPosX - chaserPosX;
   var dY = PointerPosY - chaserPosY;
+  chaserSmoothing = csmoothSlider.value();
 
   chaserSpeedX = dX/chaserSmoothing;
   chaserSpeedY = dY/chaserSmoothing;
@@ -96,6 +98,7 @@ function mainFFT(){
   //==================GET KEY BY COORDINATES=====================//
   arrayChaserPosX.push(chaserPosX);
   arrayChaserPosY.push(chaserPosY);
+  keySmoothing = ksmoothSlider.value();
 
   if(arrayChaserPosX.length > keySmoothing || arrayChaserPosY.length > keySmoothing){
     arrayChaserPosX.splice(0, arrayChaserPosX.length-keySmoothing);
