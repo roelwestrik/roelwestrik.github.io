@@ -23,10 +23,13 @@ var inBlue = 0;
 var DIN;
 
 function preload(){
-    mainback = loadImage('imgs/background.svg');
-    mainbackred = loadImage('imgs/redbutton.svg');
-    mainbackyellow = loadImage('imgs/yellowbutton.svg');
-    mainbackblue = loadImage('imgs/bluebutton.svg');
+    mainback = loadImage('imgs/background.png');
+    mainbackred = loadImage('imgs/redbutton.png');
+    mainbackyellow = loadImage('imgs/yellowbutton.png');
+    mainbackblue = loadImage('imgs/bluebutton.png');
+
+    transparancy = loadImage('imgs/transparancy.png');
+    rainbow = loadImage('imgs/rainbow.png');
 
     DIN = loadFont('fonts/D-DIN.otf');
 }
@@ -47,10 +50,13 @@ function draw () {
     frameRate(60);
     background(0);
 
-    imageSize = min(windowWidth,windowHeight)/1.2;
+    imageSize = min(windowWidth,windowHeight)/1.4;
     buttonSize = imageSize / 10;
     
     tint(255,255);
+    image(rainbow, 0,0, imageSize, imageSize);
+    image(transparancy, mouseX-windowWidth/2, mouseY-windowHeight/2, windowWidth*2, windowHeight*2);
+    tint(255,230);
     image(mainback, 0,0, imageSize, imageSize);
     //------------BUTTON MUSIC------------//
     if (dist(mouseX-width/2,mouseY-height/2,imageSize/30,-imageSize/25)<buttonSize){
