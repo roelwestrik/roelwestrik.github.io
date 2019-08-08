@@ -112,6 +112,12 @@ function draw () {
     tint(255, currentopacityblue);
     image(mainbackblue, 0,0, imageSize, imageSize);
 
+    if (inRed == 1 || inYellow == 1 || inBlue == 1){
+        cursor('HAND');
+    } else {
+        cursor();
+    }
+
 }
 
 function windowResized() {
