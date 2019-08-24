@@ -134,7 +134,9 @@ function draw () {
 }
 
 function windowResized() {
-    resizeCanvas(windowWidth-10, windowHeight-20);
+    if(isMobile==0){
+        resizeCanvas(windowWidth-10, windowHeight-20);
+    }    
 }
 
 function mouseClicked(){
