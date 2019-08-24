@@ -177,11 +177,19 @@ function draw() {
     drawCOF_arcs();
 
     drawCOF_dashboard();
+
+    translate((MainRadius/2), 0);
+
+    bckBtn();
   }
 
 }
 
-
+function mouseClicked() {
+  if (dist(-windowWidth/2+80,windowHeight/2-80, mouseX-width/2, mouseY-height/2)<50){
+    window.open("../../", "_self");
+  }
+}
 
 function getSum(total, num) {
   return total + num;

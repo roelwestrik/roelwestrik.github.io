@@ -1,8 +1,8 @@
 body {
   background-color: black;
-}
+} 
 
-p,h1,a {
+/* p,h1,a {
   color: white;
   text-decoration: none;
   font-family: 'Open Sans', sans-serif;
@@ -27,3 +27,4 @@ p,h1,a {
   background-position: center;
   background-repeat: no-repeat;
 }
+ */ 
