@@ -53,84 +53,73 @@ function draw () {
     background(0);
     cursor();
 
-    testMobile();
-    print (isMobile);
-
-    if(isMobile==1){
-        textSize(windowWidth/20);
-        noStroke();
-        fill(255,255);
-        text("Oops! It looks like you're on mobile",0,0);
-        text("Rotate your screen to continue",0,40);
+    imageSize = min(windowWidth,windowHeight)/1.4;
+    buttonSize = imageSize / 10;
+    
+    tint(255,255);
+    image(rainbow, 0,0, imageSize, imageSize);
+    image(transparancy, mouseX-windowWidth/2, mouseY-windowHeight/2, windowWidth*2, windowHeight*2);
+    tint(255,230);
+    image(mainback, 0,0, imageSize, imageSize);
+    //------------BUTTON MUSIC------------//
+    if (dist(mouseX-width/2,mouseY-height/2,imageSize/30,-imageSize/25)<buttonSize){
+        targetopacityred=255;
+        inRed = 1;
     } else {
-   
-        imageSize = min(windowWidth,windowHeight)/1.4;
-        buttonSize = imageSize / 10;
-        
-        tint(255,255);
-        image(rainbow, 0,0, imageSize, imageSize);
-        image(transparancy, mouseX-windowWidth/2, mouseY-windowHeight/2, windowWidth*2, windowHeight*2);
-        tint(255,230);
-        image(mainback, 0,0, imageSize, imageSize);
-        //------------BUTTON MUSIC------------//
-        if (dist(mouseX-width/2,mouseY-height/2,imageSize/30,-imageSize/25)<buttonSize){
-            targetopacityred=255;
-            inRed = 1;
-        } else {
-            targetopacityred=0;
-            inRed = 0;
-        }
-        
-        fill(255, 255, 255, currentopacityred);
-        text("My Music", 0, imageSize/2 + 20);
-   
-        var dopacityred = targetopacityred - currentopacityred;
-        currentopacityred = dopacityred*smoothing + currentopacityred;
-
-        tint(255, currentopacityred);
-        image(mainbackred, 0,0, imageSize, imageSize);
-
-        //------------BUTTON PROGRAMMING------------//
-        if (dist(mouseX-width/2,mouseY-height/2,imageSize/12,imageSize/7)<buttonSize){
-            targetopacityyellow=255;
-            inYellow = 1;
-        } else {
-            targetopacityyellow=0;
-            inYellow = 0;
-        }
-
-        fill(255, 255, 255, currentopacityyellow);
-        text("My Playground", 0, imageSize/2 + 20);
-
-
-        var dopacityyellow = targetopacityyellow - currentopacityyellow;
-        currentopacityyellow = dopacityyellow*smoothing + currentopacityyellow;
-
-        tint(255, currentopacityyellow);
-        image(mainbackyellow, 0,0, imageSize, imageSize);
-
-        //------------BUTTON ARCHITECTURE------------//
-        if (dist(mouseX-width/2,mouseY-height/2,-imageSize/10,imageSize/10)<buttonSize){
-            targetopacityblue=255;
-            inBlue = 1;
-        } else {
-            targetopacityblue=0;
-            inBlue = 0;
-        }
-
-        fill(255, 255, 255, currentopacityblue);
-        text("My Portfolio", 0, imageSize/2 + 20);
-
-        var dopacityblue = targetopacityblue - currentopacityblue;
-        currentopacityblue = dopacityblue*smoothing + currentopacityblue;
-
-        tint(255, currentopacityblue);
-        image(mainbackblue, 0,0, imageSize, imageSize);
-
-        if (inRed == 1 || inYellow == 1 || inBlue == 1){
-            cursor('HAND');
-        } 
+        targetopacityred=0;
+        inRed = 0;
     }
+    
+    fill(255, 255, 255, currentopacityred);
+    text("My Music", 0, imageSize/2 + 20);
+
+    var dopacityred = targetopacityred - currentopacityred;
+    currentopacityred = dopacityred*smoothing + currentopacityred;
+
+    tint(255, currentopacityred);
+    image(mainbackred, 0,0, imageSize, imageSize);
+
+    //------------BUTTON PROGRAMMING------------//
+    if (dist(mouseX-width/2,mouseY-height/2,imageSize/12,imageSize/7)<buttonSize){
+        targetopacityyellow=255;
+        inYellow = 1;
+    } else {
+        targetopacityyellow=0;
+        inYellow = 0;
+    }
+
+    fill(255, 255, 255, currentopacityyellow);
+    text("My Playground", 0, imageSize/2 + 20);
+
+
+    var dopacityyellow = targetopacityyellow - currentopacityyellow;
+    currentopacityyellow = dopacityyellow*smoothing + currentopacityyellow;
+
+    tint(255, currentopacityyellow);
+    image(mainbackyellow, 0,0, imageSize, imageSize);
+
+    //------------BUTTON ARCHITECTURE------------//
+    if (dist(mouseX-width/2,mouseY-height/2,-imageSize/10,imageSize/10)<buttonSize){
+        targetopacityblue=255;
+        inBlue = 1;
+    } else {
+        targetopacityblue=0;
+        inBlue = 0;
+    }
+
+    fill(255, 255, 255, currentopacityblue);
+    text("My Portfolio", 0, imageSize/2 + 20);
+
+    var dopacityblue = targetopacityblue - currentopacityblue;
+    currentopacityblue = dopacityblue*smoothing + currentopacityblue;
+
+    tint(255, currentopacityblue);
+    image(mainbackblue, 0,0, imageSize, imageSize);
+
+    if (inRed == 1 || inYellow == 1 || inBlue == 1){
+        cursor('HAND');
+    } 
+
 }
 
 function windowResized() {
@@ -149,22 +138,3 @@ function mouseClicked(){
     }
 }
 
-function touchEnded(){
-    if (inRed == 1 && inYellow == 0 && inBlue == 0){
-        window.open("https://www.youtube.com/watch?v=PDnuNYRCs4A&list=UUmzIQbKRPatHGDwSaesC8vw&index=68", "_self");
-    }
-    if (inRed == 0 && inYellow == 1 && inBlue == 0){
-        window.open("pages/harmonic-coloring", "_self");
-    }
-    if (inRed == 0 && inYellow == 0 && inBlue == 1){
-        window.open("pages/portfolio2", "_self");
-    }
-}
-
-function testMobile() {
-    if (windowHeight>windowWidth){
-        isMobile = 1;
-    } else {
-        isMobile = 0;
-    }
-}
