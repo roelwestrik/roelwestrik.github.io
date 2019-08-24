@@ -124,7 +124,7 @@ function draw () {
     textSize(34);
     noStroke();
     textAlign(CENTER, CENTER);
-    text("My Portfolio", 0, imageSize/2-30);
+    text("My Portfolio", 0, imageSize/2-20);
     
 }
 
