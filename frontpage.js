@@ -22,6 +22,8 @@ var inBlue = 0;
 
 var DIN;
 
+var isMobile = 0;
+
 function preload(){
     mainback = loadImage('imgs/background.png');
     mainbackred = loadImage('imgs/redbutton.png');
@@ -47,6 +49,8 @@ function setup () {
 }
 
 function draw () {
+    isMobile();
+
     frameRate(60);
     background(0);
     cursor();
@@ -63,6 +67,9 @@ function draw () {
     if (dist(mouseX-width/2,mouseY-height/2,imageSize/30,-imageSize/25)<buttonSize){
         targetopacityred=255;
         inRed = 1;
+    } else if(isMobile=1){
+        targetopacityred=255;
+        inRed = 0;
     } else {
         targetopacityred=0;
         inRed = 0;
@@ -81,6 +88,9 @@ function draw () {
     if (dist(mouseX-width/2,mouseY-height/2,imageSize/12,imageSize/7)<buttonSize){
         targetopacityyellow=255;
         inYellow = 1;
+    } else if(isMobile=1){
+        targetopacityyellow=255;
+        inYellow = 0;
     } else {
         targetopacityyellow=0;
         inYellow = 0;
@@ -99,6 +109,9 @@ function draw () {
     if (dist(mouseX-width/2,mouseY-height/2,-imageSize/10,imageSize/10)<buttonSize){
         targetopacityblue=255;
         inBlue = 1;
+    } else if(isMobile=1){
+        targetopacityblue=255;
+        inBlue = 0;
     } else {
         targetopacityblue=0;
         inBlue = 0;
@@ -144,5 +157,13 @@ function touchEnded(){
     }
     if (inRed == 0 && inYellow == 0 && inBlue == 1){
         window.open("pages/portfolio2", "_self");
+    }
+}
+
+function testMobile() {
+    if (windowHeight>windowWidth){
+        isMobile = 1;
+    } else {
+        isMobile = 0;
     }
 }
