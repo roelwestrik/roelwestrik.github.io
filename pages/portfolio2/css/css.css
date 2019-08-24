@@ -1,5 +1,5 @@
 .modal-dialog{
-    width:80vw;
+    width:calc(90vmin*1.77);
   }
 
 

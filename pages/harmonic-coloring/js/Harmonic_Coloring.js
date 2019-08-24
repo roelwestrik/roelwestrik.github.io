@@ -138,51 +138,80 @@ function draw() {
   translate(width/2-(MainRadius/2), height/2);
   colorMode(HSB, 255, 255, 255, 1);
   textAlign(CENTER, CENTER);
-  
-  if (int(testON) == 0) {
-    fill(255);
-    noStroke();
-    textSize(TextSize*1.5);
-    textAlign(LEFT, CENTER);
-    text('Press/Touch anywhere to start.', -200, 0);
-    textSize(TextSize);
-    text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 50);
-        
-  } else {
-    mainFFT();
 
-    //==================DRAW STUFF=====================//
-    //=========Main Circle=========//
-    noStroke();
-    fill(Hue, Sat, Brightness);
-    ellipse (0,0,MainRadius+offset);
-    fill(255);
-    ellipse(0,0,5);
-
-    translate(-(width/2-(MainRadius/2)), -(height/2));
-    textAlign(LEFT, CENTER);
-    text("peak sensitivity: " + peakSlider.value(), peakSlider.x + peakSlider.width * 1.1, peakSlider.y+TextSize/4);
-    text("brightness sensitivity: " + brightnessSlider.value(), brightnessSlider.x + brightnessSlider.width * 1.1, brightnessSlider.y+TextSize/4);
-    text("mic sensitivity: " + micSlider.value(), micSlider.x + micSlider.width * 1.1, micSlider.y+TextSize/4);
-
-    text("pointer smoothing: " + psmoothSlider.value(), psmoothSlider.x + psmoothSlider.width * 1.1, psmoothSlider.y+TextSize/4);
-    text("chaser smoothing: " + csmoothSlider.value(), csmoothSlider.x + csmoothSlider.width * 1.1, csmoothSlider.y+TextSize/4);
-    text("key smoothing: " + ksmoothSlider.value(), ksmoothSlider.x + ksmoothSlider.width * 1.1, ksmoothSlider.y+TextSize/4);
-    translate(width/2-(MainRadius/2), height/2);
-    //=========Draw Modules=========//
-    drawCOF_text();
-
-    drawCOF_vanilla();
-
-    drawCOF_arcs();
-
-    drawCOF_dashboard();
-
+  testMobile();
+  if (isMobile==1){
     translate((MainRadius/2), 0);
+    textSize(windowWidth/20);
+    textAlign(CENTER,CENTER);
+    noStroke();
+    fill(255,255);
+    text("Oops! It looks like you're on mobile",0,0);
+    text("Rotate your screen to continue",0,40);
 
-    bckBtn();
+    peakSlider.hide();
+    brightnessSlider.hide();
+    micSlider.hide();
+  
+    psmoothSlider.hide();
+    csmoothSlider.hide();
+    ksmoothSlider.hide();
+  } else {
+  
+    if (int(testON) == 0) {
+      fill(255);
+      noStroke();
+      textSize(TextSize*1.5);
+      textAlign(LEFT, CENTER);
+      text('Press/Touch anywhere to start.', -200, 0);
+      textSize(TextSize);
+      text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 50);
+          
+    } else {
+      mainFFT();
+
+      //==================DRAW STUFF=====================//
+      //=========Main Circle=========//
+      noStroke();
+      fill(Hue, Sat, Brightness);
+      ellipse (0,0,MainRadius+offset);
+      fill(255);
+      ellipse(0,0,5);
+
+      //=========Sliders=========//
+      translate(-(width/2-(MainRadius/2)), -(height/2));
+
+      peakSlider.show();
+      brightnessSlider.show();
+      micSlider.show();
+    
+      psmoothSlider.show();
+      csmoothSlider.show();
+      ksmoothSlider.show();
+
+      textAlign(LEFT, CENTER);
+      text("peak sensitivity: " + peakSlider.value(), peakSlider.x + peakSlider.width * 1.1, peakSlider.y+TextSize/4);
+      text("brightness sensitivity: " + brightnessSlider.value(), brightnessSlider.x + brightnessSlider.width * 1.1, brightnessSlider.y+TextSize/4);
+      text("mic sensitivity: " + micSlider.value(), micSlider.x + micSlider.width * 1.1, micSlider.y+TextSize/4);
+
+      text("pointer smoothing: " + psmoothSlider.value(), psmoothSlider.x + psmoothSlider.width * 1.1, psmoothSlider.y+TextSize/4);
+      text("chaser smoothing: " + csmoothSlider.value(), csmoothSlider.x + csmoothSlider.width * 1.1, csmoothSlider.y+TextSize/4);
+      text("key smoothing: " + ksmoothSlider.value(), ksmoothSlider.x + ksmoothSlider.width * 1.1, ksmoothSlider.y+TextSize/4);
+      translate(width/2-(MainRadius/2), height/2);
+      //=========Draw Modules=========//
+      drawCOF_text();
+
+      drawCOF_vanilla();
+
+      drawCOF_arcs();
+
+      drawCOF_dashboard();
+
+      translate((MainRadius/2), 0);
+
+      bckBtn();
+    }
   }
-
 }
 
 function mouseClicked() {
@@ -199,3 +228,10 @@ function windowResized() {
   resizeCanvas(windowWidth-50, windowHeight-50);
 }
 
+function testMobile() {
+  if (windowHeight>windowWidth){
+      isMobile = 1;
+  } else {
+      isMobile = 0;
+  }
+}
