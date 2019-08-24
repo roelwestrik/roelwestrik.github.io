@@ -150,6 +150,24 @@ function mouseClicked(){
 }
 
 function touchStarted(){
+    if (dist(mouseX-width/2,mouseY-height/2,imageSize/30,-imageSize/25)<buttonSize){
+        inRed = 1;
+    } else {
+        inRed = 0;
+    }
+
+    if (dist(mouseX-width/2,mouseY-height/2,imageSize/12,imageSize/7)<buttonSize){
+        inYellow = 1;
+    } else {
+        inYellow = 0;
+    }
+
+    if (dist(mouseX-width/2,mouseY-height/2,-imageSize/10,imageSize/10)<buttonSize){
+        inBlue = 1;
+    } else {
+        inBlue = 0;
+    }
+
     if (inRed == 1 && inYellow == 0 && inBlue == 0){
         window.open("https://www.youtube.com/watch?v=PDnuNYRCs4A&list=UUmzIQbKRPatHGDwSaesC8vw&index=68", "_self");
     }
