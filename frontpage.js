@@ -76,8 +76,10 @@ function draw () {
         inRed = 0;
     }
 
-    fill(255, 255, 255, currentopacityred);
-    text("My Music", 0, imageSize/2 + 20);
+    if(isMobile==0){
+        fill(255, 255, 255, currentopacityred);
+        text("My Music", 0, imageSize/2 + 20);
+    }
 
     var dopacityred = targetopacityred - currentopacityred;
     currentopacityred = dopacityred*smoothing + currentopacityred;
@@ -97,8 +99,10 @@ function draw () {
         inYellow = 0;
     }
 
-    fill(255, 255, 255, currentopacityyellow);
-    text("My Playground", 0, imageSize/2 + 20);
+    if(isMobile==0){
+        fill(255, 255, 255, currentopacityyellow);
+        text("My Playground", 0, imageSize/2 + 20);
+    }
 
     var dopacityyellow = targetopacityyellow - currentopacityyellow;
     currentopacityyellow = dopacityyellow*smoothing + currentopacityyellow;
@@ -118,9 +122,11 @@ function draw () {
         inBlue = 0;
     }
 
-    fill(255, 255, 255, currentopacityblue);
-    text("My Portfolio", 0, imageSize/2 + 20);
-
+    if(isMobile==0){
+        fill(255, 255, 255, currentopacityblue);
+        text("My Portfolio", 0, imageSize/2 + 20);
+    }
+    
     var dopacityblue = targetopacityblue - currentopacityblue;
     currentopacityblue = dopacityblue*smoothing + currentopacityblue;
 
