@@ -126,7 +126,7 @@ function draw () {
         fill(255, 255, 255, currentopacityblue);
         text("My Portfolio", 0, imageSize/2 + 20);
     }
-    
+
     var dopacityblue = targetopacityblue - currentopacityblue;
     currentopacityblue = dopacityblue*smoothing + currentopacityblue;
 
@@ -157,17 +157,17 @@ function mouseClicked(){
     }
 }
 
-function touchEnded(){
-    if (inRed == 1 && inYellow == 0 && inBlue == 0){
-        window.open("https://www.youtube.com/watch?v=PDnuNYRCs4A&list=UUmzIQbKRPatHGDwSaesC8vw&index=68", "_self");
-    }
-    if (inRed == 0 && inYellow == 1 && inBlue == 0){
-        window.open("pages/harmonic-coloring", "_self");
-    }
-    if (inRed == 0 && inYellow == 0 && inBlue == 1){
-        window.open("pages/portfolio2", "_self");
-    }
-}
+// function touchEnded(){
+//     if (inRed == 1 && inYellow == 0 && inBlue == 0){
+//         window.open("https://www.youtube.com/watch?v=PDnuNYRCs4A&list=UUmzIQbKRPatHGDwSaesC8vw&index=68", "_self");
+//     }
+//     if (inRed == 0 && inYellow == 1 && inBlue == 0){
+//         window.open("pages/harmonic-coloring", "_self");
+//     }
+//     if (inRed == 0 && inYellow == 0 && inBlue == 1){
+//         window.open("pages/portfolio2", "_self");
+//     }
+// }
 
 function testMobile() {
     if (windowHeight>windowWidth){
