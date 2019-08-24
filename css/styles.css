@@ -2,13 +2,13 @@ body {
   background-color: black;
 } 
 
-/* p,h1,a {
+p,h1,a {
   color: white;
   text-decoration: none;
-  font-family: 'Open Sans', sans-serif;
 
 }
 
+/* 
 .carousel-item {
   height: 100vmin;
   min-height: 350px;
