@@ -49,7 +49,8 @@ function setup () {
 }
 
 function draw () {
-    isMobile();
+    testMobile();
+    print (isMobile);
 
     frameRate(60);
     background(0);
@@ -67,7 +68,7 @@ function draw () {
     if (dist(mouseX-width/2,mouseY-height/2,imageSize/30,-imageSize/25)<buttonSize){
         targetopacityred=255;
         inRed = 1;
-    } else if(isMobile=1){
+    } else if(isMobile==1){
         targetopacityred=255;
         inRed = 0;
     } else {
@@ -88,7 +89,7 @@ function draw () {
     if (dist(mouseX-width/2,mouseY-height/2,imageSize/12,imageSize/7)<buttonSize){
         targetopacityyellow=255;
         inYellow = 1;
-    } else if(isMobile=1){
+    } else if(isMobile==1){
         targetopacityyellow=255;
         inYellow = 0;
     } else {
@@ -109,7 +110,7 @@ function draw () {
     if (dist(mouseX-width/2,mouseY-height/2,-imageSize/10,imageSize/10)<buttonSize){
         targetopacityblue=255;
         inBlue = 1;
-    } else if(isMobile=1){
+    } else if(isMobile==1){
         targetopacityblue=255;
         inBlue = 0;
     } else {
