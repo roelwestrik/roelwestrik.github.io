@@ -16,7 +16,7 @@ function draw(){
     noStroke();
 
     textSize(34);
-    text('The Mobile version of this website is still under construction',0,-100);
+    text('The mobile version of this website is still under construction',0,-100);
     textSize(28);
     text('Please visit the desktop version for full functionality',0,-40);
     text('If you are looking for my portfolio,',0,60);
@@ -36,7 +36,7 @@ function windowResized() {
 function touchStarted(){
     print(dist(mouseX-windowWidth/2, mouseY-windowHeight/2, 0, btnY));
     if (dist(mouseX-windowWidth/2, mouseY-windowHeight/2, 0, btnY)<btnSize){
-        window.open("imgs/portfolio_web_082019.pdf");
+        window.open("portfolio", "_self");
         print('YES');
     }
 }
