@@ -1,6 +1,8 @@
 var btnSize = 120;
 var btnY = 260;
 
+var btn
+
 function setup(){
     createCanvas(windowWidth-10, windowHeight-20);
     colorMode(RGB,255,255,255,255);
@@ -33,7 +35,7 @@ function windowResized() {
     resizeCanvas(windowWidth-10, windowHeight-20);
 }
 
-function touchStarted(){
+function mouseClicked(){
     print(dist(mouseX-windowWidth/2, mouseY-windowHeight/2, 0, btnY));
     if (dist(mouseX-windowWidth/2, mouseY-windowHeight/2, 0, btnY)<btnSize){
         window.open("portfolio", "_self");
