@@ -1,7 +1,7 @@
 var btnSize = 120;
 var btnY = 260;
 
-var btn
+var btnOpacity = 0;
 
 function setup(){
     createCanvas(windowWidth-10, windowHeight-20);
@@ -24,7 +24,11 @@ function draw(){
     text('If you are looking for my portfolio,',0,60);
     text('you can click here to download it directly',0,100);
 
-    noFill();
+    if (dist(mouseX-windowWidth/2, mouseY-windowHeight/2, 0, btnY)<btnSize){
+        btnOpacity = 255;
+    } else btnOpacity = 0;
+    
+    fill(btnOpacity);
     stroke(255);
     strokeWeight(2);
 
