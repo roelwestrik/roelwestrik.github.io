@@ -8,19 +8,6 @@ p,h1,a {
 
 }
 
-body {
-  opacity: 1;
-  transition: 1s opacity;
-}
-body.fade-out {
-  opacity: 0;
-  transition: none;
-}
-
-html {
-  background-color: black;
-}
-
 /* 
 .carousel-item {
   height: 100vmin;
