@@ -1,7 +1,7 @@
 function mainFFT(){
   
   //==================FFT ANALYSIS=====================//
-  var spectrum = fft.analyze();
+  let spectrum = fft.analyze();
       
   for (var i=0; i<=11; i++){
     Amplitude[i] = 0;
@@ -11,16 +11,16 @@ function mainFFT(){
     }
 
     Amplitude[i] = Amplitude[i] / NumberOctaves;
-    Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
+    Amplitude[i] = pow(map(Amplitude[i], 0, 255, 0, 1),(1/amplification));
   }
 
   
   //==================BOUNDS TO POWER REMAPPER=====================//
-  maxAmplitude = Amplitude[0];
-  var maxIndex = 0;
-  var micLevel = mic.getLevel();
+  let maxAmplitude = Amplitude[0];
+  let maxIndex = 0;
+  let micLevel = mic.getLevel();
 
-  amplitudeSum = Amplitude.reduce(getSum);
+  let amplitudeSum = Amplitude.reduce(getSum);
 
   for (var i=0; i<=11; i++) {
     if (Amplitude[i] > maxAmplitude) {
@@ -28,6 +28,8 @@ function mainFFT(){
       maxAmplitude = Amplitude[i];
     }
   }
+
+  // print(maxAmplitude);
 
   if (maxAmplitude > micCutoff){
     for (var i=0; i<=11; i++){
@@ -74,8 +76,8 @@ function mainFFT(){
   anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
   
   //==================GET CHASER=====================//
-  var dX = PointerPosX - chaserPosX;
-  var dY = PointerPosY - chaserPosY;
+  let dX = PointerPosX - chaserPosX;
+  let dY = PointerPosY - chaserPosY;
 
   chaserSpeedX = dX/chaserSmoothing;
   chaserSpeedY = dY/chaserSmoothing;
@@ -116,11 +118,11 @@ function mainFFT(){
   
   //==================THIS WAS THE GOAL=====================//
   Hue = map(angleChaser , PI, PI*-1, 0, 255);
-  Sat = pow(map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 1),1/colorBoost)*255;
-  Brightness = pow(avgBrightness, 1/colorBoost)*255;
+  Sat = pow(map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 1),1/satBoost)*255;
+  Brightness = pow(avgBrightness, 1/brightBoost)*255;
   keyHue = map(angleKey , PI, PI*-1, 0, 255);
-  keySat = pow(map(dist(MainRadius/2*sin(angleKey), MainRadius/2*cos(angleKey), chaserPosX, chaserPosY), 0,MainRadius, 1,0),1/colorBoost)*255;
-  keyBrightness = pow(avgBckBrightness, 1/colorBoost)*(255/3);
+  keySat = pow(map(dist(MainRadius/2*sin(angleKey), MainRadius/2*cos(angleKey), chaserPosX, chaserPosY), 0,MainRadius, 1,0),1/satBoost)*255;
+  keyBrightness = pow(avgBckBrightness, 1/brightBoost)*(255/bckDim);
 
   print("HUE: " + round(Hue*100)/100);
   print("SAT: " + round(keySat*100)/100);

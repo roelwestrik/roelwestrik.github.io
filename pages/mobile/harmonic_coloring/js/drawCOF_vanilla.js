@@ -27,12 +27,15 @@ function drawCOF_vanilla () {
     ellipse (chaserPosX, chaserPosY, 20);
 
     //=========Key Pointer=========//
+    let magnifier = TextSize*2.5;
+
     noFill();
     stroke(255);
     strokeWeight(1);
     rotate(angleKey*-1);
-    ellipse(0,MainRadius/2+offset*2, TextSize*2);
-    line(0,0,0,MainRadius/2+offset*2-TextSize);
+    ellipse(0,MainRadius/2+offset*2, magnifier);
+    line(0,0,0,MainRadius/2+offset*2-magnifier/2);
+    line(0,MainRadius/2+offset*2+magnifier/2,0,MainRadius/2+offset*2+magnifier/2+TextSize);
     rotate(angleKey);
 
     //=========Star=========//

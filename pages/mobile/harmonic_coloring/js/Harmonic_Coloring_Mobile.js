@@ -5,6 +5,7 @@ var testON = 0;
 var NumberOctaves = 6;
 var Octave = [27.5, 41.2, 30.9, 46.2, 69.3, 51.9, 38.9, 29.1, 43.7, 32.7, 50, 36.7];
 var PitchList = ['A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D'];
+var MainRadius = 0;
 
 var XCoordinatesSetup = [];
 var YCoordinatesSetup = [];
@@ -49,30 +50,34 @@ var keyBrightness = 0;
 
 //==================VARIABLES=====================//
     //=========Behavioural=========//
-var pointerSmoothing = 100;
-var chaserSmoothing = 50;
+var pointerSmoothing = 50;
+var chaserSmoothing = 100;
 var keySmoothing = 400;
 var brightnessSmoothing = 50;
 
+var amplification = 1;
 var PeakSensitivity = 40;
-var colorBoost = 2;
-var micCutoff = 0.03;
+var micCutoff = 0.1;
+var satBoost = 5;
+var brightBoost = 1;
 
     //=========Display=========//
-var MainRadius = 400;
-var offset = 20;
+var radiusScale = 3;
+var offset = 32;
 var TextSize = 16;
-var maxPitchRadius = 50;
+var maxPitchRadius = MainRadius/10;
+
+var bckDim = 2;
 
 var glowRings = 5;
 
     //=========Dashboard Thing=========//
 var KeyTrail = [0,0];
-var KeyTrailLength = 400;
+var KeyTrailLength = keySmoothing;
 var ChaserTrail = [];
-var ChaserTrailLength = 50;
+var ChaserTrailLength = chaserSmoothing;
 var PointerTrail = [];
-var PointerTrailLength = 100;
+var PointerTrailLength = pointerSmoothing;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -122,7 +127,7 @@ function draw() {
     text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 50);
         
   } else {
-    MainRadius = (min(width, height))/2.5;
+    MainRadius = (min(width, height))/radiusScale;
 
     for (var i=0; i<=11; i++){
       XCoordinatesSetup[i]=(MainRadius/2-offset)*sin((i*TWO_PI)/12);
@@ -138,13 +143,14 @@ function draw() {
 
     // ==================DRAW STUFF=====================//
     background(keyHue, keySat, keyBrightness);
+    // background(0);
 
         //=========Glowing Circle==========//
     fill(Hue, Sat, Brightness, 1/glowRings);
     noStroke();
 
     for (i=1; i<=glowRings; i++){
-      ellipse(0,0,(MainRadius+offset)+(Brightness/255*MainRadius/(glowRings/i)));
+      ellipse(0,0,(MainRadius+offset)+(avgBrightness*MainRadius/(glowRings/i)));
     }
 
         //=========Main Circle==========//
@@ -153,9 +159,9 @@ function draw() {
     ellipse (0,0,MainRadius+offset);
     
         //=========Optional Draw Modules=========//
-    drawCOF_vanilla();
+    // drawCOF_vanilla();
 
-    drawCOF_arcs();
+    // drawCOF_arcs();
 
     // drawCOF_dashboard();
 
