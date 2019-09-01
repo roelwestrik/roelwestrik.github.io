@@ -136,11 +136,6 @@ function draw() {
     noStroke();
     textAlign(RIGHT, BOTTOM);
     text('v1.03', width/2-80,height/2-40);
-    if(getAudioContext().state == 'running'){
-      text('Mic is running', width/2-80,height/2-60);
-    } else {
-      text('Mic was not allowed to start', width/2-80,height/2-60);
-    }
 }
 
 function windowResized() {
