@@ -131,11 +131,16 @@ function draw() {
     
   }
 
-  //=========Version==========//
+  //=========Version & Info==========//
   fill(255);
     noStroke();
-    textAlign(CENTER, RIGHT);
-    text('v1.01', width/2-80,height/2-40);
+    textAlign(RIGHT, BOTTOM);
+    text('v1.03', width/2-80,height/2-40);
+    if(getAudioContext().state == 'running'){
+      text('Mic is running', width/2-80,height/2-60);
+    } else {
+      text('Mic was not allowed to start', width/2-80,height/2-60);
+    }
 }
 
 function windowResized() {

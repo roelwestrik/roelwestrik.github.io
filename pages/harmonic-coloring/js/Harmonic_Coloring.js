@@ -85,6 +85,8 @@ var toggleText = 0;
 var toggleDashboard = 0;
 var toggleArcs = 0;
 var toggleVanilla = 0;
+var toggleMic = 0;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -171,13 +173,24 @@ function draw() {
     btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla');
     btn(80,height-80-btnSize*2*5,btnSize,'Toggle All');
 
+    btn(80,80,btnSize,'Toggle Microphone');
     }
 
     //=========Cursor & Info=========//
     fill(255);
     noStroke();
     textAlign(RIGHT, BOTTOM);
-    text('v1.02', width/2-80,height/2-40);
+    text('v1.03', width/2-80,height/2-40);
+    if(getAudioContext().state == 'running'){
+      if(toggleMic==1){
+        text('Mic is running', width/2-80,height/2-60);
+      } else if(testON==1){
+        text('Mic has been stopped', width/2-80,height/2-60);
+      }
+    } else {
+      text('Mic was not allowed to start', width/2-80,height/2-60);
+    }
+    
 
     fill(255);
     noStroke();
@@ -197,6 +210,7 @@ function mouseClicked() {
   if (getAudioContext().state !== 'running') {
     getAudioContext().resume();
     }
+  toggleMic=1;
   } 
 
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*0)<btnSize){
@@ -229,6 +243,15 @@ function mouseClicked() {
     }
   }
 
+  if(dist(mouseX,mouseY, 80,80)<btnSize){
+    if(toggleMic==1){
+    mic.stop();
+    } else {
+    mic.start();
+    }
+    toggleMic = (toggleMic+1)%2;
+    print(dist(mouseX,mouseY, 80,80));
+  }
 }
 
 function getSum(total, num) {

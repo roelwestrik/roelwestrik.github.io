@@ -3,7 +3,7 @@ function drawCOF_text () {
     var textYLoc = height/2-120;
     var textSpacing = 1.9;
     //=========Text=========//
-    TextSize = 18;
+    // TextSize = 18;
     textSize(TextSize);
     textAlign(RIGHT, CENTER);
     fill(255);
