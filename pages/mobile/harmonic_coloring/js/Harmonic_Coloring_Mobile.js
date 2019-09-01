@@ -79,27 +79,6 @@ function setup() {
   angleMode(RADIANS);
 
   var audioContext = getAudioContext();
-
-}
-
-function mousePressed() {
-  if (testON == 0){
-  testON = 1;
-
-  mic = new p5.AudioIn();
-  mic.start();
-
-  fft = new p5.FFT();
-  fft.setInput(mic);
-
-  if (getAudioContext().state !== 'running') {
-    getAudioContext().resume();
-    }
-  } 
-}
-
-function touchStarted() {
-  mousePressed();
 }
 
 function draw() {
@@ -164,11 +143,26 @@ function draw() {
   }
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth,windowHeight);
+}
+
 function getSum(total, num) {
   return total + num;
 }
 
-function deviceTurned() {
-  resizeCanvas(windowWidth, windowHeight);
-}
+function touchEnded() {
+  if (testON == 0){
+  testON = 1;
 
+  mic = new p5.AudioIn();
+  mic.start();
+
+  fft = new p5.FFT();
+  fft.setInput(mic);
+
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+    }
+  } 
+}
