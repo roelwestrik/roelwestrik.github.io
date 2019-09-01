@@ -11,81 +11,71 @@ function mainFFT(){
     }
 
     Amplitude[i] = Amplitude[i] / NumberOctaves;
-    Amplitude[i] = map(Amplitude[i], 0, 255, 0, 1);
+    Amplitude[i] = pow(map(Amplitude[i], 0, 255, 0, 1),(1/amplification));
   }
 
   
   //==================BOUNDS TO POWER REMAPPER=====================//
-  var maxValue = Amplitude[0];
+  var maxAmplitude = Amplitude[0];
   var maxIndex = 0;
-  amplitudeSum = Amplitude.reduce(getSum);
-  PeakSensitivity = peakSlider.value();
+  var micLevel = mic.getLevel();
+
+  var amplitudeSum = Amplitude.reduce(getSum);
 
   for (var i=0; i<=11; i++) {
-    if (Amplitude[i] > maxValue) {
+    if (Amplitude[i] > maxAmplitude) {
       maxIndex = i;
-      maxValue = Amplitude[i];
+      maxAmplitude = Amplitude[i];
     }
   }
 
-  if (amplitudeSum > micCutoff){
+  if (maxAmplitude > micCutoff){
     for (var i=0; i<=11; i++){
-      AmplitudeMap[i]=map(Amplitude[i], 0, maxValue, 0, 1);
+      AmplitudeMap[i]=map(Amplitude[i], 0, maxAmplitude, 0, 1);
       AmplitudeMap[i]=pow(AmplitudeMap[i], PeakSensitivity);
-      AmplitudeMap[i]=map(AmplitudeMap[i], 0, 1, 0, maxValue);
+      AmplitudeMap[i]=map(AmplitudeMap[i], 0, 1, 0, maxAmplitude);
     }
-    } else {
-      for (var i=0; i<=11; i++){
-        AmplitudeMap[i]=0;
-      }
-    }
+    PointerPosX = 0;
+    PointerPosY = 0;
 
-  //==================WEIGHTED AVERAGES OF ALL PITHCES, BITCHES=====================//
-  PointerPosX = 0;
-  PointerPosY = 0;
-  var amplitudeSumMap = AmplitudeMap.reduce(getSum);
-  
-  if (amplitudeSum > micCutoff){
+    amplitudeMapSum = AmplitudeMap.reduce(getSum);
+
     for (var i=0; i<=11; i++){
       PointerPosX = PointerPosX + (AmplitudeMap[i] * XCoordinatesSetup[i]);
       PointerPosY = PointerPosY + (AmplitudeMap[i] * YCoordinatesSetup[i]);
     }
-    PointerPosX = PointerPosX/amplitudeSumMap;
-    PointerPosY = PointerPosY/amplitudeSumMap;
-    arrayBrightness.push(fft.getCentroid());
-  } else {
-    PointerPosX = 0;
-    PointerPosY = 0;
-    arrayBrightness.push(0);
-  }
+    PointerPosX = PointerPosX/amplitudeMapSum;
+    PointerPosY = PointerPosY/amplitudeMapSum;
 
-  //==================MOVING AVERAGES=====================//
+    Brightness = (maxAmplitude);
+
+    } else {
+      for (var i=0; i<=11; i++){
+        AmplitudeMap[i]=0;
+      }
+      PointerPosX = 0;
+      PointerPosY = 0;
+
+      Brightness = 0;
+    }
+
+  //==================GET POINTER=====================//
   arrayPointerPosX.push(PointerPosX);
   arrayPointerPosY.push(PointerPosY);
-  BrightnessSensitivity = brightnessSlider.value();
-  pointerSmoothing = psmoothSlider.value();
     
   if(arrayPointerPosX.length > pointerSmoothing || arrayPointerPosY.length > pointerSmoothing){
     arrayPointerPosX.splice(0, arrayPointerPosX.length-pointerSmoothing);
     arrayPointerPosY.splice(0, arrayPointerPosY.length-pointerSmoothing);
-    arrayBrightness.splice(0, arrayBrightness.length-pointerSmoothing);
   }
 
   PointerPosX = arrayPointerPosX.reduce(getSum) / arrayPointerPosX.length;
   PointerPosY = arrayPointerPosY.reduce(getSum) / arrayPointerPosY.length;
-  avgBrightness = arrayBrightness.reduce(getSum) / arrayBrightness.length;
-
-  avgBrightness = map(avgBrightness, 0, 4000, 0, 1);
-  avgBrightness = pow(avgBrightness, 1/BrightnessSensitivity);
-  avgBrightness = min(avgBrightness*freqCutoff, freqCutoff);
 
   anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
-
   
   //==================GET CHASER=====================//
   var dX = PointerPosX - chaserPosX;
   var dY = PointerPosY - chaserPosY;
-  chaserSmoothing = csmoothSlider.value();
 
   chaserSpeedX = dX/chaserSmoothing;
   chaserSpeedY = dY/chaserSmoothing;
@@ -95,10 +85,9 @@ function mainFFT(){
 
   angleChaser = atan2(chaserPosX - 0, chaserPosY - 0);
 
-  //==================GET KEY BY COORDINATES=====================//
+  //==================GET KEY=====================//
   arrayChaserPosX.push(chaserPosX);
   arrayChaserPosY.push(chaserPosY);
-  keySmoothing = ksmoothSlider.value();
 
   if(arrayChaserPosX.length > keySmoothing || arrayChaserPosY.length > keySmoothing){
     arrayChaserPosX.splice(0, arrayChaserPosX.length-keySmoothing);
@@ -110,9 +99,31 @@ function mainFFT(){
 
   angleKey = atan2(KeyPosX - 0, KeyPosY - 0);
 
+    //==================GET BRIGHTNESS=====================//
+  arrayBrightness.push(Brightness);
+  if(arrayBrightness.length > brightnessSmoothing){
+    arrayBrightness.splice(0, arrayBrightness.length-brightnessSmoothing);
+  }
+
+  avgBrightness = arrayBrightness.reduce(getSum) / arrayBrightness.length;
+
+  arrayBckBrightness.push(avgBrightness);
+  if(arrayBckBrightness.length > brightnessSmoothing){
+    arrayBckBrightness.splice(0, arrayBckBrightness.length-brightnessSmoothing);
+  }
+
+  avgBckBrightness = arrayBckBrightness.reduce(getSum) / arrayBckBrightness.length;
+  
   //==================THIS WAS THE GOAL=====================//
   Hue = map(angleChaser , PI, PI*-1, 0, 255);
-  Sat = map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 255);
-  Brightness = map(avgBrightness, 0, freqCutoff, 0, 255);
+  Sat = pow(map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 1),1/satBoost)*255;
+  Brightness = pow(avgBrightness, 1/brightBoost)*255;
+  keyHue = map(angleKey , PI, PI*-1, 0, 255);
+  keySat = pow(map(dist(MainRadius/2*sin(angleKey), MainRadius/2*cos(angleKey), chaserPosX, chaserPosY), 0,MainRadius, 1,0),1/satBoost)*255;
+  keyBrightness = pow(avgBckBrightness, 1/brightBoost)*(255/bckDim);
+
+  // print("HUE: " + round(Hue*100)/100);
+  // print("SAT: " + round(keySat*100)/100);
+  // print("BRIGHT: " + round(Brightness*100)/100);
     
 }

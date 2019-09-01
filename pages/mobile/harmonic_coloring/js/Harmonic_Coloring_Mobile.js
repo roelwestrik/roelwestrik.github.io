@@ -50,34 +50,26 @@ var keyBrightness = 0;
 
 //==================VARIABLES=====================//
     //=========Behavioural=========//
-var pointerSmoothing = 50;
+var pointerSmoothing = 20;
 var chaserSmoothing = 100;
 var keySmoothing = 400;
 var brightnessSmoothing = 50;
 
-var amplification = 1;
-var PeakSensitivity = 40;
+var amplification = 3;
+var PeakSensitivity = 60;
 var micCutoff = 0.1;
 var satBoost = 5;
 var brightBoost = 1;
 
-    //=========Display=========//
+//=========Display=========//
 var radiusScale = 3;
 var offset = 32;
 var TextSize = 16;
-var maxPitchRadius = MainRadius/10;
+var maxPitchRadius = 30;
 
 var bckDim = 2;
 
 var glowRings = 5;
-
-    //=========Dashboard Thing=========//
-var KeyTrail = [0,0];
-var KeyTrailLength = keySmoothing;
-var ChaserTrail = [];
-var ChaserTrailLength = chaserSmoothing;
-var PointerTrail = [];
-var PointerTrailLength = pointerSmoothing;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -176,7 +168,7 @@ function getSum(total, num) {
   return total + num;
 }
 
-function windowResized() {
+function deviceTurned() {
   resizeCanvas(windowWidth, windowHeight);
 }
 

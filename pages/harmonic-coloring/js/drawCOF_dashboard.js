@@ -1,7 +1,6 @@
 function drawCOF_dashboard () {
     //=========Trails=========//
     //=====key=====//
-    KeyTrailLength = ksmoothSlider.value();
     KeyTrail.push(angleKey);
 
     if (KeyTrail.length > KeyTrailLength){
@@ -25,7 +24,6 @@ function drawCOF_dashboard () {
  
     //=====chaser=====//
     ChaserTrail.push(angleChaser);
-    ChaserTrailLength = csmoothSlider.value();
 
     if (ChaserTrail.length > ChaserTrailLength){
         ChaserTrail.splice(0,ChaserTrail.length - ChaserTrailLength);
@@ -46,7 +44,6 @@ function drawCOF_dashboard () {
 
     //=====pointer=====//
     PointerTrail.push(anglePointer);
-    PointerTrailLength = psmoothSlider.value();
 
     if (PointerTrail.length > PointerTrailLength){
         PointerTrail.splice(0,PointerTrail.length - PointerTrailLength);
