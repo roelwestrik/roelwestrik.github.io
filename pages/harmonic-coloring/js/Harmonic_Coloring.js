@@ -93,6 +93,7 @@ function setup() {
   strokeCap(SQUARE);
   textSize(TextSize);
   angleMode(RADIANS);
+  noCursor();
 
   var audioContext = getAudioContext();
 
@@ -104,7 +105,7 @@ function draw() {
   translate(width/2, height/2);
   colorMode(HSB, 255, 255, 255, 1);
   textAlign(CENTER, CENTER);
-
+  
   if (int(testON) == 0) {
     fill(255);
     noStroke();
@@ -113,7 +114,7 @@ function draw() {
     text('Press/Touch anywhere to start.', -200, 0);
     textSize(TextSize);
     text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 50);
-        
+
   } else {
     MainRadius = (min(width, height))/radiusScale;
 
@@ -132,7 +133,7 @@ function draw() {
     // ==================DRAW STUFF=====================//
     background(keyHue, keySat, keyBrightness);
     // background(0);
-
+    
         //=========Glowing Circle==========//
     fill(Hue, Sat, Brightness, 1/glowRings);
     noStroke();
@@ -141,13 +142,12 @@ function draw() {
       ellipse(0,0,(MainRadius+offset)+(avgBrightness*MainRadius/(glowRings/i)));
     }
 
-        //=========Main Circle==========//
+    //=========Main Circle==========//
     noStroke();
     fill(Hue, Sat, Brightness);
     ellipse (0,0,MainRadius+offset);
     
-        //=========Optional Draw Modules=========//
-    
+    //=========Optional Draw Modules=========//
     if (toggleVanilla==1){
       drawCOF_vanilla();
     }
@@ -164,17 +164,24 @@ function draw() {
       drawCOF_text();
     }
 
+    //=========Buttons=========//
     btn(80,height-80,btnSize,'Back to Frontpage');
-
     btn(80,height-140,btnSize,'Toggle Text');
-
     btn(80,height-200,btnSize,'Toggle Dashboard');
-
     btn(80,height-260,btnSize,'Toggle Arcs');
-
     btn(80,height-320,btnSize,'Toggle Vanilla');
 
-  }
+    }
+
+    //=========Cursor & Info=========//
+    fill(255);
+    noStroke();
+    textAlign(CENTER, RIGHT);
+    text('v1.01', width/2-80,height/2-40);
+
+    fill(255);
+    noStroke();
+    ellipse(mouseX-width/2, mouseY-height/2, 10);
 }
 
 function mouseClicked() {

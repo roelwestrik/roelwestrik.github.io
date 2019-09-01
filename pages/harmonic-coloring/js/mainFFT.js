@@ -16,11 +16,11 @@ function mainFFT(){
 
   
   //==================BOUNDS TO POWER REMAPPER=====================//
-  var maxAmplitude = Amplitude[0];
   var maxIndex = 0;
   var micLevel = mic.getLevel();
-
   var amplitudeSum = Amplitude.reduce(getSum);
+
+  maxAmplitude = Amplitude[0];
 
   for (var i=0; i<=11; i++) {
     if (Amplitude[i] > maxAmplitude) {

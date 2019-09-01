@@ -124,23 +124,18 @@ function draw() {
       ellipse(0,0,(MainRadius+offset)+(avgBrightness*MainRadius/(glowRings/i)));
     }
 
-        //=========Main Circle==========//
+    //=========Main Circle==========//
     noStroke();
     fill(Hue, Sat, Brightness);
     ellipse (0,0,MainRadius+offset);
     
-        //=========Optional Draw Modules=========//
-    // drawCOF_vanilla();
-
-    // drawCOF_arcs();
-
-    // drawCOF_dashboard();
-
-    // drawCOF_text();
-
-    // bckBtn();
-
   }
+
+  //=========Version==========//
+  fill(255);
+    noStroke();
+    textAlign(CENTER, RIGHT);
+    text('v1.01', width/2-80,height/2-40);
 }
 
 function windowResized() {

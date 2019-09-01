@@ -47,4 +47,13 @@ function drawCOF_vanilla () {
         line(XCoordinatesSetup[i], YCoordinatesSetup[i], PointerPosX, PointerPosY);
         }
 
+    fill(255);
+    noStroke();
+    textAlign(LEFT, BOTTOM);
+    if(dist(mouseX-width/2, mouseY-height/2, chaserPosX, chaserPosY)<20){
+        text('The Chaser Displays the Main Color', mouseX-width/2, mouseY-height/2);
+    }
+    if(dist((MainRadius/2+offset*2)*sin(angleKey), (MainRadius/2+offset*2)*cos(angleKey), mouseX-width/2, mouseY-height/2)<40){
+        text('The Key Displays the Background Color', mouseX-width/2, mouseY-height/2);
+    }
 }

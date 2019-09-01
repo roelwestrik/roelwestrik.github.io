@@ -1,7 +1,7 @@
 function mainFFT(){
   
   //==================FFT ANALYSIS=====================//
-  let spectrum = fft.analyze();
+  var spectrum = fft.analyze();
       
   for (var i=0; i<=11; i++){
     Amplitude[i] = 0;
@@ -16,11 +16,11 @@ function mainFFT(){
 
   
   //==================BOUNDS TO POWER REMAPPER=====================//
-  let maxAmplitude = Amplitude[0];
-  let maxIndex = 0;
-  let micLevel = mic.getLevel();
+  var maxIndex = 0;
+  var micLevel = mic.getLevel();
+  var amplitudeSum = Amplitude.reduce(getSum);
 
-  let amplitudeSum = Amplitude.reduce(getSum);
+  maxAmplitude = Amplitude[0];
 
   for (var i=0; i<=11; i++) {
     if (Amplitude[i] > maxAmplitude) {
@@ -28,8 +28,6 @@ function mainFFT(){
       maxAmplitude = Amplitude[i];
     }
   }
-
-  // print(maxAmplitude);
 
   if (maxAmplitude > micCutoff){
     for (var i=0; i<=11; i++){
@@ -76,8 +74,8 @@ function mainFFT(){
   anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
   
   //==================GET CHASER=====================//
-  let dX = PointerPosX - chaserPosX;
-  let dY = PointerPosY - chaserPosY;
+  var dX = PointerPosX - chaserPosX;
+  var dY = PointerPosY - chaserPosY;
 
   chaserSpeedX = dX/chaserSmoothing;
   chaserSpeedY = dY/chaserSmoothing;
@@ -124,8 +122,8 @@ function mainFFT(){
   keySat = pow(map(dist(MainRadius/2*sin(angleKey), MainRadius/2*cos(angleKey), chaserPosX, chaserPosY), 0,MainRadius, 1,0),1/satBoost)*255;
   keyBrightness = pow(avgBckBrightness, 1/brightBoost)*(255/bckDim);
 
-  print("HUE: " + round(Hue*100)/100);
-  print("SAT: " + round(keySat*100)/100);
-  print("BRIGHT: " + round(Brightness*100)/100);
+  // print("HUE: " + round(Hue*100)/100);
+  // print("SAT: " + round(keySat*100)/100);
+  // print("BRIGHT: " + round(Brightness*100)/100);
     
 }
