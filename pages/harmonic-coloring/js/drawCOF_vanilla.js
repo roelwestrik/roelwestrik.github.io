@@ -9,10 +9,11 @@ function drawCOF_vanilla () {
     text(PitchList[i], TextLocX[i], TextLocY[i]);
     }
 
-    noFill();
-    stroke(255,255);
-    strokeWeight(1);
-    ellipse(0,0,MainRadius+offset);
+    // noFill();
+    // stroke(255,255);
+    // strokeWeight(1);
+    // ellipse(0,0,MainRadius+offset);
+    
     fill(255,255);
     ellipse(0,0,5);
 
@@ -50,6 +51,9 @@ function drawCOF_vanilla () {
     fill(255);
     noStroke();
     textAlign(LEFT, BOTTOM);
+    if(dist(mouseX-width/2, mouseY-height/2, PointerPosX, PointerPosY)<20&&dist(mouseX-width/2, mouseY-height/2, chaserPosX, chaserPosY)>20){
+        text('The Pointer Listens for Music', mouseX-width/2, mouseY-height/2);
+    }
     if(dist(mouseX-width/2, mouseY-height/2, chaserPosX, chaserPosY)<20){
         text('The Chaser Displays the Main Color', mouseX-width/2, mouseY-height/2);
     }

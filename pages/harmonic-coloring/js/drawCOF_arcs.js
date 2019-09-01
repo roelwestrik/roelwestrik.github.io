@@ -11,4 +11,22 @@ function drawCOF_arcs () {
 
     line(0,0,0,-a);
     line(0, 0, chaserPosX, chaserPosY);
+
+    stroke(255,255/2);
+    fill(255);
+
+    // rotate(-anglePointer);
+    // line(0,0,0,MainRadius/2+offset/2);
+    // ellipse(0,MainRadius/2+offset/2, 2);
+    // rotate(anglePointer);
+
+    // rotate(-angleChaser);
+    // line(0,0,0,MainRadius/2+offset/2);
+    // ellipse(0,MainRadius/2+offset/2, 2);
+    // rotate(angleChaser);
+
+    // rotate(-angleKey);
+    // line(0,0,0,MainRadius/2+offset/2);
+    // ellipse(0,MainRadius/2+offset/2, 2);
+    // rotate(angleKey);
 }

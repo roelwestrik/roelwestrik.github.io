@@ -1,4 +1,5 @@
 function drawCOF_dashboard () {
+    var circleSize = 20;
     //=========Trails=========//
     //=====key=====//
     KeyTrail.push(angleKey);
@@ -10,16 +11,17 @@ function drawCOF_dashboard () {
     noFill();
     for(i=0;i<KeyTrail.length;i++){
         stroke(255, (i/KeyTrail.length));
-        strokeWeight((i/KeyTrail.length)*3);
+        strokeWeight((i/KeyTrail.length)*0.5);
         rotate(KeyTrail[i]*-1);
-        line(0, MainRadius/2+offset*3,0, MainRadius/2+offset*4);
+        ellipse(0,MainRadius/2+offset*4,(i/KeyTrail.length)*circleSize);
         rotate(KeyTrail[i]);
     }
     rotate(angleKey*-1);
-    stroke(255,255,255,1);
-    strokeWeight(3);
-    line(0,MainRadius/2+offset*2+TextSize, 0, MainRadius/2+offset*4);
+    noStroke();
+    fill(255);
+    ellipse(0,MainRadius/2+offset*4,circleSize/2);
     rotate(angleKey);
+    noFill();
 
  
     //=====chaser=====//
@@ -31,16 +33,18 @@ function drawCOF_dashboard () {
 
     for(i=0;i<ChaserTrail.length;i++){
         stroke(255, (i/ChaserTrail.length));
-        strokeWeight((i/ChaserTrail.length)*2);
+        strokeWeight((i/ChaserTrail.length)*0.5);
         rotate(ChaserTrail[i]*-1);
-        line(0, MainRadius/2+offset*5, 0, MainRadius/2+offset*6);
+        // line(0, MainRadius/2+offset*5, 0, MainRadius/2+offset*6);
+        ellipse(0,MainRadius/2+offset*5,(i/ChaserTrail.length)*circleSize);
         rotate(ChaserTrail[i]);
     }
     rotate(angleChaser*-1);
-    stroke(255,255,255,1);
-    strokeWeight(2);
-    line(0,MainRadius/2+offset*4, 0, MainRadius/2+offset*6);
+    noStroke();
+    fill(255);
+    ellipse(0,MainRadius/2+offset*5,circleSize/2);
     rotate(angleChaser);
+    noFill();
 
     //=====pointer=====//
     PointerTrail.push(anglePointer);
@@ -51,15 +55,17 @@ function drawCOF_dashboard () {
 
     for(i=0;i<PointerTrail.length;i++){
         stroke(255, (i/PointerTrail.length));
-        strokeWeight((i/PointerTrail.length));
+        strokeWeight((i/PointerTrail.length)*0.5);
         rotate(PointerTrail[i]*-1);
-        line(0, MainRadius/2+offset*7, 0, MainRadius/2+offset*8);
+        // line(0, MainRadius/2+offset*7, 0, MainRadius/2+offset*8);
+        ellipse(0,MainRadius/2+offset*6,(i/PointerTrail.length)*circleSize);
         rotate(PointerTrail[i]);
     }
     rotate(anglePointer*-1);
-    stroke(255,255,255,1);
-    strokeWeight(1);
-    line(0,MainRadius/2+offset*6, 0, MainRadius/2+offset*8);
+    noStroke();
+    fill(255);
+    ellipse(0,MainRadius/2+offset*6,circleSize/2);
     rotate(anglePointer);
+    noFill();
 
 }

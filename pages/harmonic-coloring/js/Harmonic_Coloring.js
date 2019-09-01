@@ -80,12 +80,11 @@ var PointerTrail = [];
 var PointerTrailLength = pointerSmoothing;
 
 //=========Buttons=========//
-var btnSize = 40;
+var btnSize = 30;
 var toggleText = 0;
 var toggleDashboard = 0;
 var toggleArcs = 0;
 var toggleVanilla = 0;
-
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -165,19 +164,20 @@ function draw() {
     }
 
     //=========Buttons=========//
-    btn(80,height-80,btnSize,'Back to Frontpage');
-    btn(80,height-140,btnSize,'Toggle Text');
-    btn(80,height-200,btnSize,'Toggle Dashboard');
-    btn(80,height-260,btnSize,'Toggle Arcs');
-    btn(80,height-320,btnSize,'Toggle Vanilla');
+    btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage');
+    btn(80,height-80-btnSize*2*1,btnSize,'Toggle Text');
+    btn(80,height-80-btnSize*2*2,btnSize,'Toggle Dashboard');
+    btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs');
+    btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla');
+    btn(80,height-80-btnSize*2*5,btnSize,'Toggle All');
 
     }
 
     //=========Cursor & Info=========//
     fill(255);
     noStroke();
-    textAlign(CENTER, RIGHT);
-    text('v1.01', width/2-80,height/2-40);
+    textAlign(RIGHT, BOTTOM);
+    text('v1.02', width/2-80,height/2-40);
 
     fill(255);
     noStroke();
@@ -199,21 +199,34 @@ function mouseClicked() {
     }
   } 
 
-  if(dist(mouseX,mouseY, 80,height-80)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*0)<btnSize){
     window.open('../../', '_self');
   }
 
-  if(dist(mouseX,mouseY, 80,height-140)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*1)<btnSize){
     toggleText = (toggleText+1)%2;
   }
-  if(dist(mouseX,mouseY, 80,height-200)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*2)<btnSize){
     toggleDashboard = (toggleDashboard+1)%2;
   }
-  if(dist(mouseX,mouseY, 80,height-260)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*3)<btnSize){
     toggleArcs = (toggleArcs+1)%2;
   }
-  if(dist(mouseX,mouseY, 80,height-320)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*4)<btnSize){
     toggleVanilla = (toggleVanilla+1)%2;
+  }
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*5)<btnSize){
+    if(toggleVanilla==1||toggleArcs==1||toggleDashboard==1||toggleText==1){
+      toggleVanilla=0;
+      toggleArcs=0;
+      toggleDashboard=0;
+      toggleText=0;
+    } else {
+      toggleVanilla=1;
+      toggleArcs=01;
+      toggleDashboard=1;
+      toggleText=1;
+    }
   }
 
 }
