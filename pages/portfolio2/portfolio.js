@@ -16,6 +16,9 @@ var buttonSize;
 
 var smoothing = 0.15;
 
+//=========Buttons=========//
+var btnSize = 30;
+
 var inRed = 0;
 var inYellow = 0;
 var inBlue = 0;
@@ -118,7 +121,7 @@ function draw () {
         cursor('HAND');
     }
 
-    bckBtn();
+    btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage', 0);
 
     fill(255);
     textSize(34);
@@ -143,7 +146,7 @@ function windowResized() {
         modal1();
       }
 
-      if (dist(-windowWidth/2+80,windowHeight/2-80, mouseX-width/2, mouseY-height/2)<50){
+      if (dist(-windowWidth/2+80,windowHeight/2-80, mouseX-width/2, mouseY-height/2)<btnSize){
         window.open("../../", "_self");
       }
   }

@@ -15,18 +15,22 @@ function drawCOF_arcs () {
     stroke(255,255/2);
     fill(255);
 
-    // rotate(-anglePointer);
-    // line(0,0,0,MainRadius/2+offset/2);
-    // ellipse(0,MainRadius/2+offset/2, 2);
-    // rotate(anglePointer);
+    //=========Key Pointer=========//
+    var magnifier = TextSize*2.5;
 
-    // rotate(-angleChaser);
-    // line(0,0,0,MainRadius/2+offset/2);
-    // ellipse(0,MainRadius/2+offset/2, 2);
-    // rotate(angleChaser);
-
-    // rotate(-angleKey);
-    // line(0,0,0,MainRadius/2+offset/2);
-    // ellipse(0,MainRadius/2+offset/2, 2);
-    // rotate(angleKey);
+    noFill();
+    stroke(255);
+    strokeWeight(1);
+    rotate(angleKey*-1);
+    ellipse(0,MainRadius/2+offset*2, magnifier);
+    line(0,0,0,MainRadius/2+offset*2-magnifier/2);
+    line(0,MainRadius/2+offset*2+magnifier/2,0,MainRadius/2+offset*2+magnifier/2+TextSize);
+    rotate(angleKey);
+    
+    fill(255);
+    noStroke();
+    textAlign(LEFT, BOTTOM);
+    if(dist((MainRadius/2+offset*2)*sin(angleKey), (MainRadius/2+offset*2)*cos(angleKey), mouseX-width/2, mouseY-height/2)<40){
+        text('The Key Displays the Background Color', mouseX-width/2, mouseY-height/2);
+    }
 }

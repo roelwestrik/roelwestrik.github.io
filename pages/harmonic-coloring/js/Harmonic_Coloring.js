@@ -163,12 +163,12 @@ function draw() {
     }
 
     //=========Buttons=========//
-    btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage');
-    btn(80,height-80-btnSize*2*1,btnSize,'Toggle Text');
-    btn(80,height-80-btnSize*2*2,btnSize,'Toggle Dashboard');
-    btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs');
-    btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla');
-    btn(80,height-80-btnSize*2*5,btnSize,'Toggle All');
+    btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage', 0);
+    btn(80,height-80-btnSize*2*1,btnSize,'Toggle Text', toggleText);
+    btn(80,height-80-btnSize*2*2,btnSize,'Toggle Dashboard', toggleDashboard);
+    btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs', toggleArcs);
+    btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla', toggleVanilla);
+    btn(80,height-80-btnSize*2*5,btnSize,'Toggle All', 0);
 
     }
 
