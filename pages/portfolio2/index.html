@@ -15,34 +15,20 @@
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="css/css.css">
 
-    <style>
-        #loading {
-            background: url('imgs/loading.gif') no-repeat center center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            z-index: 9999999;
-        }
-    </style>
-
     <script>
-        function hideLoader() {
-            $('#loading').hide();
-        }
-
-        $(window).ready(hideLoader);
-
-        // Strongly recommended: Hide loader after 20 seconds, even if the page hasn't finished loading
-        setTimeout(hideLoader, 20 * 1000);
+        $(function() {
+            return $(".carousel.lazy").on("slide", function(ev) {
+                var lazy;
+                lazy = $(ev.relatedTarget).find("img[data-src]");
+                lazy.attr("src", lazy.data('src'));
+                lazy.removeAttr("data-src");
+            });
+        });
     </script>
 
 </head>
 
 <body>    
-
-    <div id="loading"></div>
 
     <script language="javascript" type="text/javascript" src="portfolio.js"></script>
 
@@ -50,8 +36,9 @@
     <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div id="Carousel1" class="carousel slide carousel-fade" data-ride="carousel" data-interval="false">
                     
+                <!-- CAROUSEL2 -->
+                <div id="Carousel1" class="carousel slide carousel-fade lazy" data-ride="carousel" data-interval="false">
                     <!-- Indicators -->
                     <ol class="carousel-indicators">
                         <li data-target="#Carousel1" data-slide-to="0" class="active"></li>
@@ -76,47 +63,47 @@
                             <img class="img-responsive" src="imgs/webportfolio5.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio6.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio6.jpg" alt="" style="width:100%">
                             <div class="carousel-caption">
                                 <h1>Full Project:</h1>
                                 <p>for the full project description, <a href = 'http://uf.roboticbuilding.eu/index.php/project07:Diverse' target="_blank">click here</a></p>
                             </div>
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio7.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio7.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio8.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio8.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio9.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio9.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio10.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio10.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio11.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio11.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio12.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio12.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio13.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio13.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio14.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio14.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio15.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio15.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio16.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio16.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio17.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio17.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio18.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio18.jpg" alt="" style="width:100%">
                             <div class="carousel-caption">
                                 <h1>Flythrough:</h1>
                                 <p>for a flythrough, <a href = 'https://youtu.be/USn_03krYoY' target="_blank">click here</a></p>
@@ -141,7 +128,9 @@
     <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div id="Carousel2" class="carousel slide carousel-fade" data-ride="carousel">
+
+                <!-- CAROUSEL1 -->
+                <div id="Carousel2" class="carousel slide carousel-fade lazy" data-ride="carousel">
 
                     <!-- Indicators -->
                     <ol class="carousel-indicators">
@@ -163,39 +152,39 @@
                             <img class="img-responsive" src="imgs/webportfolio19.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio20.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio20.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio21.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio21.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio22.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio22.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio23.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio23.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio24.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio24.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio25.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio25.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio26.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio26.jpg" alt="" style="width:100%">
                             <div class="carousel-caption">
                                 <h1>Animated version:</h1>
                                 <p>for an animated version, <a href = 'https://youtu.be/t4HhJ63PPCg' target="_blank">click here</a></p>
                             </div>
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio27.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio27.jpg" alt="" style="width:100%">
                             <div class="carousel-caption">
                                 <h1>Animated version:</h1>
                                 <p>for an animated version, <a href = 'https://youtu.be/Gz3fKuvVuSM' target="_blank">click here</a></p>
                             </div>
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio28.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio28.jpg" alt="" style="width:100%">
                             <div class="carousel-caption">
                                 <h1>Animated version:</h1>
                                 <p>for an animated version, <a href = 'https://youtu.be/4ScHFqbU3q4' target="_blank">click here</a></p>
@@ -220,7 +209,9 @@
     <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div id="Carousel3" class="carousel slide carousel-fade" data-ride="carousel">
+                         
+                <!-- CAROUSEL3 -->
+                <div id="Carousel3" class="carousel slide carousel-fade lazy" data-ride="carousel">
 
                     <!-- Indicators -->
                     <ol class="carousel-indicators">
@@ -237,32 +228,32 @@
                     <!-- Wrapper for slides -->
                     <div class="carousel-inner">
                         <div class="item active">
-                            <img class="img-responsive" src="imgs/webportfolio29.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio29.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio30.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio30.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio31.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio31.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio32.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio32.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio33.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio33.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio34.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio34.jpg" alt="" style="width:100%">
                             <div class="carousel-caption">
                                 <h1>Full Soundtrack:</h1>
                                 <p>to find the complete soundtrack to 'Een Verzwegen Oorlog', <a href = 'https://soundcloud.com/roelwestrik/sets/een-verzwegen-oorlog-soundtrack' target="_blank">click here</a></p>
                             </div>
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio35.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio35.jpg" alt="" style="width:100%">
                         </div>
                         <div class="item">
-                            <img class="img-responsive" src="imgs/webportfolio36.jpg" alt="" style="width:100%">
+                            <img class="img-responsive" data-src="imgs/webportfolio36.jpg" alt="" style="width:100%">
                             <div class="carousel-caption">
                             <h1>Full Soundtrack:</h1>
                             <p>to find the complete soundtrack to 'Terug in de Tijd', <a href = 'https://soundcloud.com/roelwestrik/sets/terug-in-de-tijd-soundtrack' target="_blank">click here</a></p>
