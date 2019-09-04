@@ -85,6 +85,7 @@ var toggleText = 0;
 var toggleDashboard = 0;
 var toggleArcs = 0;
 var toggleVanilla = 0;
+var toggleAll = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -163,12 +164,17 @@ function draw() {
     }
 
     //=========Buttons=========//
+    if(toggleVanilla==1&&toggleArcs==1&&toggleDashboard==1&&toggleText==1){
+      toggleAll=1;
+    } else {
+      toggleAll=0;
+    }
     btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage', 0);
     btn(80,height-80-btnSize*2*1,btnSize,'Toggle Text', toggleText);
     btn(80,height-80-btnSize*2*2,btnSize,'Toggle Dashboard', toggleDashboard);
     btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs', toggleArcs);
     btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla', toggleVanilla);
-    btn(80,height-80-btnSize*2*5,btnSize,'Toggle All', 0);
+    btn(80,height-80-btnSize*2*5,btnSize,'Toggle All', toggleAll);
 
     }
 
@@ -219,7 +225,7 @@ function mouseClicked() {
       toggleText=0;
     } else {
       toggleVanilla=1;
-      toggleArcs=01;
+      toggleArcs=1;
       toggleDashboard=1;
       toggleText=1;
     }

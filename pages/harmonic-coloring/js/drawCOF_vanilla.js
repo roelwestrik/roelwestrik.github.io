@@ -37,6 +37,23 @@ function drawCOF_vanilla () {
     stroke(255);
     ellipse (chaserPosX, chaserPosY, chaserRadius);
 
+    //=========Key Pointer=========//
+    var magnifier = TextSize*2.5;
+
+    noFill();
+    stroke(255);
+    strokeWeight(1);
+    rotate(angleKey*-1);
+    ellipse(0,MainRadius/2+offset*2, magnifier);
+    rotate(angleKey);
+    
+    fill(255);
+    noStroke();
+    textAlign(LEFT, BOTTOM);
+    if(dist((MainRadius/2+offset*2)*sin(angleKey), (MainRadius/2+offset*2)*cos(angleKey), mouseX-width/2, mouseY-height/2)<magnifier){
+        text('The Key Displays the Background Color', mouseX-width/2, mouseY-height/2);
+    }
+
     //=========Star=========//
     for (i=0;i<=11;i++){
         stroke(255,AmplitudeMap[i]*255);

@@ -8,7 +8,9 @@ function drawCOF_text () {
     textAlign(RIGHT, CENTER);
     fill(255);
     noStroke();
-    text("VALUES:", textXLoc, textYLoc-TextSize*textSpacing*4);
+    textStyle(BOLD);
+    text("V A L U E S :", textXLoc, textYLoc-TextSize*textSpacing*4.5);
+    textStyle(NORMAL);
     text("Hue: " + int(Hue) + " /255", textXLoc, textYLoc-TextSize*textSpacing*3);
     text("Saturation: " + int(Sat) + " /255", textXLoc, textYLoc-TextSize*textSpacing*2);
     text("Brightness: " + int(Brightness) + " /255", textXLoc, textYLoc-TextSize*textSpacing*1);
