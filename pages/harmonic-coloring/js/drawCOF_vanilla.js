@@ -52,6 +52,12 @@ function drawCOF_vanilla () {
     textAlign(LEFT, BOTTOM);
     if(dist((MainRadius/2+offset*2)*sin(angleKey), (MainRadius/2+offset*2)*cos(angleKey), mouseX-width/2, mouseY-height/2)<magnifier){
         text('The Key Displays the Background Color', mouseX-width/2, mouseY-height/2);
+        noFill();
+        stroke(255);
+        strokeWeight(3);
+        rotate(angleKey*-1);
+        ellipse(0,MainRadius/2+offset*2, magnifier);
+        rotate(angleKey);
     }
 
     //=========Star=========//
