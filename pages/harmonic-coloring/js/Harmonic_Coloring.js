@@ -49,11 +49,11 @@ var keySat = 0;
 var keyBrightness = 0;
 
 //==================VARIABLES=====================//
-    //=========Behavioural=========//
-var pointerSmoothing = 20;
+//=========Behavioural=========//
+var pointerSmoothing = 40;
 var chaserSmoothing = 100;
 var keySmoothing = 400;
-var brightnessSmoothing = 50;
+var brightnessSmoothing = 2;
 
 var amplification = 3;
 var PeakSensitivity = 60;
@@ -86,6 +86,11 @@ var toggleDashboard = 0;
 var toggleArcs = 0;
 var toggleVanilla = 0;
 var toggleAll = 0;
+
+//=========Hue Test=========//
+var message = 0;
+var messageCount = 0;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -163,6 +168,10 @@ function draw() {
       drawCOF_text();
     }
 
+    if((frameCount%10)==0){
+      hueTest();
+    }
+
     //=========Buttons=========//
     if(toggleVanilla==1&&toggleArcs==1&&toggleDashboard==1&&toggleText==1){
       toggleAll=1;
@@ -175,6 +184,8 @@ function draw() {
     btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs', toggleArcs);
     btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla', toggleVanilla);
     btn(80,height-80-btnSize*2*5,btnSize,'Toggle All', toggleAll);
+    btn(80,height-80-btnSize*2*8,btnSize,'Hue Toggle', toggleAll);
+
 
     }
 
@@ -182,7 +193,7 @@ function draw() {
     fill(255);
     noStroke();
     textAlign(RIGHT, BOTTOM);
-    text('v1.03', width/2-80,height/2-40);
+    text('v1.1', width/2-80,height/2-40);
     
 }
 
@@ -229,6 +240,10 @@ function mouseClicked() {
       toggleDashboard=1;
       toggleText=1;
     }
+  }
+
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*8)<btnSize){
+    
   }
 
   if(dist(mouseX,mouseY, 80,80)<btnSize){
