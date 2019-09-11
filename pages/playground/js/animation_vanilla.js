@@ -178,7 +178,7 @@ function draw() {
   noStroke();
   textAlign(RIGHT, BOTTOM);
   text(fps + ' FPS', width/2-80,height/2-40-TextSize*1.5*1);
-  text('v1.2', width/2-80,height/2-40-TextSize*1.5*0);
+  text('v1.2.1', width/2-80,height/2-40-TextSize*1.5*0);
 
 }
 

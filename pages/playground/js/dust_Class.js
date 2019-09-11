@@ -31,7 +31,7 @@ class dust_Class {
     }
 
     show(){
-        fill(dustHue, Sat, Bri, this.a/blurNumber);
+        fill(dustHue, Sat, Bri, dustAlpha/blurNumber);
         noStroke();
         for(var j=0; j<blurNumber; j++){
             ellipse(this.x, this.y, this.r+(j*blurResolution));
