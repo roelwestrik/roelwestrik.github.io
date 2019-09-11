@@ -1,4 +1,4 @@
-function drawCOF_arcs () {
+function vanilla_arcs () {
     //=========Arcs=========//
     var a = dist(0,0,chaserPosX,chaserPosY);
     noFill();
@@ -23,7 +23,6 @@ function drawCOF_arcs () {
     strokeWeight(1);
     rotate(angleKey*-1);
     line(0,0,0,MainRadius/2+offset*2-magnifier/2);
-    // line(0,MainRadius/2+offset*2+magnifier/2,0,MainRadius/2+offset*2+magnifier/2+TextSize);
     rotate(angleKey);
 
 }

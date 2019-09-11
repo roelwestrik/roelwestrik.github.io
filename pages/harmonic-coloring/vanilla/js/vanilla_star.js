@@ -1,4 +1,6 @@
-function drawCOF_vanilla () {
+function vanilla_star () {
+    var maxPitchRadius = 30;
+
     //=========1 Circle for 12 Pitches=========//
     for (var i=0; i<=11; i++){
     noStroke();
@@ -69,4 +71,8 @@ function drawCOF_vanilla () {
 
     fill(255,255);
     ellipse(0,0,5);
+    noFill();
+    strokeWeight(1);
+    stroke(255);
+    ellipse(0,0,MainRadius+offset);
 }

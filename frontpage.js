@@ -131,7 +131,7 @@ function mouseClicked(){
         window.open("https://www.youtube.com/watch?v=PDnuNYRCs4A&list=UUmzIQbKRPatHGDwSaesC8vw&index=68", "_self");
     }
     if (inRed == 0 && inYellow == 1 && inBlue == 0){
-        window.open("pages/harmonic-coloring", "_self");
+        window.open("pages/harmonic-coloring/vanilla", "_self");
     }
     if (inRed == 0 && inYellow == 0 && inBlue == 1){
         window.open("pages/portfolio2", "_self");

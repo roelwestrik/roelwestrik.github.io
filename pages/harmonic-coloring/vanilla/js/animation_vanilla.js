@@ -1,4 +1,4 @@
-//==================INIT=====================//
+//=========mainFFT=========//
 var mic;  
 var micLevel = 0;
 var testON = 0;
@@ -36,42 +36,36 @@ var KeyPosX = 0;
 var KeyPosY = 0;
 var angleKey = 0;
 
-var arrayBrightness = [];
-var avgBrightness = 0;
-var arrayBckBrightness = [];
-var avgBckBrightness = 0;
+var arrayBri = [];
+var avgBri = 0;
+var arrayBckBri = [];
+var avgBckBri = 0;
 
 var Hue = 0;
 var Sat = 0;
-var Brightness = 0;
+var Bri = 0;
 var keyHue = 0;
 var keySat = 0;
-var keyBrightness = 0;
+var keyBri = 0;
 
-//==================VARIABLES=====================//
-//=========Behavioural=========//
 var pointerSmoothing = 40;
 var chaserSmoothing = 100;
 var keySmoothing = 400;
-var brightnessSmoothing = 2;
+var briSmoothing = 2;
 
 var amplification = 3;
 var PeakSensitivity = 60;
 var micCutoff = 0.1;
 var satBoost = 5;
-var brightBoost = 1;
+var briBoost = 1;
 
-//=========Display=========//
 var radiusScale = 3;
 var offset = 32;
-var TextSize = 16;
-var maxPitchRadius = 30;
-
 var bckDim = 2;
 
-var glowRings = 5;
+var TextSize = 16;
 
-//=========Dashboard Thing=========//
+//=========vanilla_dashboard=========//
 var KeyTrail = [0,0];
 var KeyTrailLength = keySmoothing;
 var ChaserTrail = [];
@@ -84,13 +78,8 @@ var btnSize = 30;
 var toggleText = 0;
 var toggleDashboard = 0;
 var toggleArcs = 0;
-var toggleVanilla = 0;
+var toggleStar = 0;
 var toggleAll = 0;
-
-//=========Hue Test=========//
-var message = 0;
-var messageCount = 0;
-
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -100,7 +89,6 @@ function setup() {
   angleMode(RADIANS);
 
   var audioContext = getAudioContext();
-
 }
 
 function draw() {
@@ -120,80 +108,52 @@ function draw() {
     text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 50);
 
   } else {
-    MainRadius = (min(width, height))/radiusScale;
-
-    for (var i=0; i<=11; i++){
-      XCoordinatesSetup[i]=(MainRadius/2-offset)*sin((i*TWO_PI)/12);
-      YCoordinatesSetup[i]=(MainRadius/2-offset)*-cos((i*TWO_PI)/12);
-    }
-  
-    for (var j=0; j<=11; j++){
-      TextLocX[j]=(MainRadius/2+offset*2)*sin((j*TWO_PI)/12);
-      TextLocY[j]=(MainRadius/2+offset*2)*-cos((j*TWO_PI)/12);
-    }
-
+    //=========MainFFT=========//
     mainFFT();
 
-    // ==================DRAW STUFF=====================//
-    background(keyHue, keySat, keyBrightness);
-    // background(0);
-    
-        //=========Glowing Circle==========//
-    fill(Hue, Sat, Brightness, 1/glowRings);
-    noStroke();
-
-    for (i=1; i<=glowRings; i++){
-      ellipse(0,0,(MainRadius+offset)+(avgBrightness*MainRadius/(glowRings/i)));
+    //=========Background=========//
+    vanilla_bckgrnd();
+      
+    //=========Vanilla=========//
+    if (toggleStar==1){
+      vanilla_star();
     }
 
-    //=========Main Circle==========//
-    noStroke();
-    fill(Hue, Sat, Brightness);
-    ellipse (0,0,MainRadius+offset);
-    
-    //=========Optional Draw Modules=========//
-    if (toggleVanilla==1){
-      drawCOF_vanilla();
-    }
-
+    //=========Arcs=========//
     if (toggleArcs==1){
-      drawCOF_arcs();
+      vanilla_arcs();
     }
 
+    //=========Dashboard=========//
     if (toggleDashboard==1){
-      drawCOF_dashboard();
+      vanilla_dashboard();
     }
 
+    //=========Text=========//
     if (toggleText==1){
-      drawCOF_text();
-    }
-
-    if((frameCount%10)==0){
-      hueTest();
+      vanilla_text();
     }
 
     //=========Buttons=========//
-    if(toggleVanilla==1&&toggleArcs==1&&toggleDashboard==1&&toggleText==1){
+    if(toggleStar==1&&toggleArcs==1&&toggleDashboard==1&&toggleText==1){
       toggleAll=1;
     } else {
       toggleAll=0;
     }
+    
     btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage', 0);
     btn(80,height-80-btnSize*2*1,btnSize,'Toggle Text', toggleText);
     btn(80,height-80-btnSize*2*2,btnSize,'Toggle Dashboard', toggleDashboard);
     btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs', toggleArcs);
-    btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla', toggleVanilla);
+    btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla', toggleStar);
     btn(80,height-80-btnSize*2*5,btnSize,'Toggle All', toggleAll);
-    btn(80,height-80-btnSize*2*8,btnSize,'Hue Toggle', toggleAll);
+  }
 
-
-    }
-
-    //=========Info=========//
-    fill(255);
-    noStroke();
-    textAlign(RIGHT, BOTTOM);
-    text('v1.1', width/2-80,height/2-40);
+  //=========Info=========//
+  fill(255);
+  noStroke();
+  textAlign(RIGHT, BOTTOM);
+  text('v1.1', width/2-80,height/2-40);
     
 }
 
@@ -213,7 +173,7 @@ function mouseClicked() {
   } 
 
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*0)<btnSize){
-    window.open('../../', '_self');
+    window.open('../../../../', '_self');
   }
 
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*1)<btnSize){
@@ -226,34 +186,20 @@ function mouseClicked() {
     toggleArcs = (toggleArcs+1)%2;
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*4)<btnSize){
-    toggleVanilla = (toggleVanilla+1)%2;
+    toggleStar = (toggleStar+1)%2;
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*5)<btnSize){
-    if(toggleVanilla==1||toggleArcs==1||toggleDashboard==1||toggleText==1){
-      toggleVanilla=0;
+    if(toggleStar==1||toggleArcs==1||toggleDashboard==1||toggleText==1){
+      toggleStar=0;
       toggleArcs=0;
       toggleDashboard=0;
       toggleText=0;
     } else {
-      toggleVanilla=1;
+      toggleStar=1;
       toggleArcs=1;
       toggleDashboard=1;
       toggleText=1;
     }
-  }
-
-  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*8)<btnSize){
-    
-  }
-
-  if(dist(mouseX,mouseY, 80,80)<btnSize){
-    if(toggleMic==1){
-    mic.stop();
-    } else {
-    mic.start();
-    }
-    toggleMic = (toggleMic+1)%2;
-    print(dist(mouseX,mouseY, 80,80));
   }
 }
 

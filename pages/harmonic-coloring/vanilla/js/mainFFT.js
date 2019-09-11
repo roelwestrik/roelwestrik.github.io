@@ -1,5 +1,17 @@
 function mainFFT(){
+    //==================SETUP=====================//
+    MainRadius = (min(width, height))/radiusScale;
+
+    for (var i=0; i<=11; i++){
+      XCoordinatesSetup[i]=(MainRadius/2-offset)*sin((i*TWO_PI)/12);
+      YCoordinatesSetup[i]=(MainRadius/2-offset)*-cos((i*TWO_PI)/12);
+    }
   
+    for (var j=0; j<=11; j++){
+      TextLocX[j]=(MainRadius/2+offset*2)*sin((j*TWO_PI)/12);
+      TextLocY[j]=(MainRadius/2+offset*2)*-cos((j*TWO_PI)/12);
+    }
+
   //==================FFT ANALYSIS=====================//
   var spectrum = fft.analyze();
       
@@ -47,7 +59,7 @@ function mainFFT(){
     PointerPosX = PointerPosX/amplitudeMapSum;
     PointerPosY = PointerPosY/amplitudeMapSum;
 
-    Brightness = (maxAmplitude);
+    Bri = (maxAmplitude);
 
     } else {
       for (var i=0; i<=11; i++){
@@ -56,7 +68,7 @@ function mainFFT(){
       PointerPosX = 0;
       PointerPosY = 0;
 
-      Brightness = 0;
+      Bri = 0;
     }
 
   //==================GET POINTER=====================//
@@ -100,30 +112,33 @@ function mainFFT(){
   angleKey = atan2(KeyPosX - 0, KeyPosY - 0);
 
     //==================GET BRIGHTNESS=====================//
-  arrayBrightness.push(Brightness);
-  if(arrayBrightness.length > brightnessSmoothing){
-    arrayBrightness.splice(0, arrayBrightness.length-brightnessSmoothing);
+  arrayBri.push(Bri);
+  if(arrayBri.length > briSmoothing){
+    arrayBri.splice(0, arrayBri.length-briSmoothing);
   }
 
-  avgBrightness = arrayBrightness.reduce(getSum) / arrayBrightness.length;
+  avgBri = arrayBri.reduce(getSum) / arrayBri.length;
 
-  arrayBckBrightness.push(avgBrightness);
-  if(arrayBckBrightness.length > brightnessSmoothing){
-    arrayBckBrightness.splice(0, arrayBckBrightness.length-brightnessSmoothing);
+  arrayBckBri.push(avgBri);
+  if(arrayBckBri.length > briSmoothing){
+    arrayBckBri.splice(0, arrayBckBri.length-briSmoothing);
   }
 
-  avgBckBrightness = arrayBckBrightness.reduce(getSum) / arrayBckBrightness.length;
+  avgBckBri = arrayBckBri.reduce(getSum) / arrayBckBri.length;
   
   //==================THIS WAS THE GOAL=====================//
   Hue = map(angleChaser , PI, PI*-1, 0, 255);
   Sat = pow(map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 1),1/satBoost)*255;
-  Brightness = pow(avgBrightness, 1/brightBoost)*255;
+  Bri = pow(avgBri, 1/briBoost)*255;
   keyHue = map(angleKey , PI, PI*-1, 0, 255);
   keySat = pow(map(dist(MainRadius/2*sin(angleKey), MainRadius/2*cos(angleKey), chaserPosX, chaserPosY), 0,MainRadius, 1,0),1/satBoost)*255;
-  keyBrightness = pow(avgBckBrightness, 1/brightBoost)*(255/bckDim);
+  keyBri = pow(avgBckBri, 1/briBoost)*(255/bckDim);
 
-  // print("HUE: " + round(Hue*100)/100);
-  // print("SAT: " + round(keySat*100)/100);
-  // print("BRIGHT: " + round(Brightness*100)/100);
+  print("V A L U E S:");
+  print("HUE: " + round(Hue*100)/100 + " & " + round(keyHue*100)/100);
+  print("SAT: " + round(Sat*100)/100 + " & " + round(keySat*100)/100);
+  print("BRI: " + round(Bri*100)/100 + " & " + round(keyBri*100)/100);
+  print("----------------");
+
     
 }

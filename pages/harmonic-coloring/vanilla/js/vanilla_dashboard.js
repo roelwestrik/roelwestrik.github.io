@@ -1,4 +1,4 @@
-function drawCOF_dashboard () {
+function vanilla_dashboard () {
     var circleSize = 20;
     //=========Trails=========//
     //=====key=====//
