@@ -178,7 +178,7 @@ function draw() {
   noStroke();
   textAlign(RIGHT, BOTTOM);
   text(fps + ' FPS', width/2-80,height/2-40-TextSize*1.5*1);
-  text('v1.2.1', width/2-80,height/2-40-TextSize*1.5*0);
+  text('v1.2.2', width/2-80,height/2-40-TextSize*1.5*0);
 
 }
 
@@ -197,23 +197,23 @@ function mouseClicked() {
     }
   } 
 
-  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*0)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*0)<btnSize/2){
     window.open('../../../', '_self');
   }
 
-  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*1)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*1)<btnSize/2){
     toggleDashboard = (toggleDashboard+1)%2;
   }
-  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*2)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*2)<btnSize/2){
     toggleArcs = (toggleArcs+1)%2;
   }
-  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*3)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*3)<btnSize/2){
     toggleStar = (toggleStar+1)%2;
   }
-  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*4)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*4)<btnSize/2){
     toggleHue = (toggleHue+1)%2;
   }
-  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*5)<btnSize){
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*5)<btnSize/2){
     cycleBck = (cycleBck+1)%2;
   }
 }

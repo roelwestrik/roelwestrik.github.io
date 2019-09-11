@@ -15,13 +15,13 @@ class dust_Class {
     }
 
     move(){
-        let targetSpeed = this.i*AmplitudeMap[this.i%12]*4;
+        let targetSpeed = (this.i/5)*(AmplitudeMap[this.i%12]*10);
         this.s = this.s+(targetSpeed-this.s)/dustSmooth;
         this.y = this.y-(this.s*dustSpeed);
 
-        if (this.y+this.r/2<height/-2){
+        if (this.y<height/-2){
             this.x=random(width*-1, width);
-            this.y=(height/2)+this.r/2;
+            this.y=(height/2);
         }
     }
 

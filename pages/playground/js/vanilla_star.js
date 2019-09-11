@@ -29,14 +29,14 @@ function vanilla_star () {
         text('The Chaser Displays the Main Color', mouseX-width/2, mouseY-height/2);
         chaserRadius = chaserRadius*1.5;
     }
-
-    fill(255);
-    ellipse (chaserPosX, chaserPosY, chaserRadius/4);
-    noFill();
+    
     strokeWeight(1);
+    fill(Hue, Sat, Bri);
     stroke(255);
-    ellipse (chaserPosX, chaserPosY, chaserRadius);
     ellipse (chaserPosX, chaserPosY, chaserRadius/2);
+    // noFill();
+    // stroke(255);
+    // ellipse (chaserPosX, chaserPosY, chaserRadius/2);
 
     strokeWeight(dist(PointerPosX, PointerPosY, chaserPosX, chaserPosY)/(MainRadius/4));
     line(PointerPosX, PointerPosY, chaserPosX, chaserPosY);
