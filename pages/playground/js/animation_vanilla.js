@@ -1,13 +1,18 @@
+var version = 'v1.24'; 
+
 //=========mainFFT=========//
 var mic;  
 var micLevel = 0;
 var testON = 0;
-var NumberOctaves = 6;
-var Octave = [27.5, 41.2, 30.9, 46.2, 69.3, 51.9, 38.9, 29.1, 43.7, 32.7, 50, 36.7];
+var numberOctaves = 6;
+var startingOctave = 2;
+var Octave = [27.5000, 41.2034, 30.8677, 46.2493, 34.6478, 51.9131, 38.8909, 29.1352, 43.6535, 32.7032, 48.9994, 36.7081];
 var PitchList = ['A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D'];
-var MainRadius = 0;
-var fps=0;
+var spectralCentroid = 0;
+var spectrum;
+var fps = 0;
 
+var MainRadius = 0;
 var XCoordinatesSetup = [];
 var YCoordinatesSetup = [];
 var TextLocX = [];
@@ -48,6 +53,7 @@ var Bri = 0;
 var keyHue = 0;
 var keySat = 0;
 var keyBri = 0;
+var cBri = 0;
 
 var pointerSmoothing = 40;
 var chaserSmoothing = 100;
@@ -55,7 +61,7 @@ var keySmoothing = 400;
 var briSmoothing = 2;
 
 var amplification = 3;
-var PeakSensitivity = 60;
+var PeakSensitivity = 50;
 var micCutoff = 0.1;
 var satBoost = 5;
 var briBoost = 1;
@@ -65,6 +71,7 @@ var offset = 32;
 var bckDim = 2;
 
 var TextSize = 16;
+var cTime = 0;
 
 //=========vanilla_dashboard=========//
 var KeyTrail = [0,0];
@@ -78,8 +85,9 @@ var PointerTrailLength = pointerSmoothing;
 var btnSize = 30;
 var toggleDashboard = 0;
 var toggleArcs = 0;
-var toggleStar = 0;
-var toggleHue = 0;
+var toggleStar = 1;
+var toggleSpectrum = 1;
+var toggleHue = 1;
 var cycleBck = 1;
 
 //=========Dust=========//
@@ -108,6 +116,10 @@ function setup() {
 
   var audioContext = getAudioContext();
 
+  for(i=0; i<12; i++){
+    Octave[i]=Octave[i]*pow(2, startingOctave);
+  }
+
   for(i=0; i<12*dustNumber; i++){
     dust_Particles[i] = new dust_Class(random(-width/2,width/2), random(-height/2,height/2), random(0, width/8), 0, 0, i);
   }
@@ -119,6 +131,7 @@ function draw() {
   translate(width/2, height/2);
   colorMode(HSB, 255, 255, 255, 1);
   textAlign(CENTER, CENTER);
+  cTime = millis();
   
   if (int(testON) == 0) {
     fill(255);
@@ -155,18 +168,24 @@ function draw() {
       vanilla_dashboard();
     }
 
-    //=========Dashboard=========//
+    //=========Philips Hue=========//
     if (toggleHue==1&&(frameCount%sendCheck)==1){
       hue_sendMessage();
     }
+
+    //=========Philips Hue=========//
+    if (toggleSpectrum==1){
+      vanilla_spectrum();
+    }
     
     //=========Buttons=========//
+    btn(80,height-80-btnSize*2*6,btnSize,'Cycle Through Backgrounds', 0);
+    btn(80,height-80-btnSize*2*5,btnSize,'Connect to Philips Hue', toggleHue);
+    btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla', toggleStar);
+    btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs', toggleArcs);
+    btn(80,height-80-btnSize*2*2,btnSize,'Toggle Dashboard', toggleDashboard);
+    btn(80,height-80-btnSize*2*1,btnSize,'Toggle Spectrum', toggleSpectrum);
     btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage', 0);
-    btn(80,height-80-btnSize*2*1,btnSize,'Toggle Dashboard', toggleDashboard);
-    btn(80,height-80-btnSize*2*2,btnSize,'Toggle Arcs', toggleArcs);
-    btn(80,height-80-btnSize*2*3,btnSize,'Toggle Vanilla', toggleStar);
-    btn(80,height-80-btnSize*2*4,btnSize,'Connect to Philips Hue', toggleHue);
-    btn(80,height-80-btnSize*2*5,btnSize,'Cycle Through Backgrounds', 0);
 
   }
 
@@ -177,8 +196,9 @@ function draw() {
   fill(255);
   noStroke();
   textAlign(RIGHT, BOTTOM);
+  text(int(cTime/1000) + ' s', width/2-80,height/2-40-TextSize*1.5*2);
   text(fps + ' FPS', width/2-80,height/2-40-TextSize*1.5*1);
-  text('v1.2.2', width/2-80,height/2-40-TextSize*1.5*0);
+  text(version, width/2-80,height/2-40-TextSize*1.5*0);
 
 }
 
@@ -189,7 +209,7 @@ function mouseClicked() {
   mic = new p5.AudioIn();
   mic.start();
 
-  fft = new p5.FFT();
+  fft = new p5.FFT(0.8, 1024);
   fft.setInput(mic);
 
   if (getAudioContext().state !== 'running') {
@@ -202,18 +222,32 @@ function mouseClicked() {
   }
 
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*1)<btnSize/2){
-    toggleDashboard = (toggleDashboard+1)%2;
+    toggleSpectrum = (toggleSpectrum+1)%2;
   }
+  
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*2)<btnSize/2){
-    toggleArcs = (toggleArcs+1)%2;
+    toggleDashboard = (toggleDashboard+1)%2;
+    if (toggleDashboard == 1){
+      toggleStar = 1;
+    }
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*3)<btnSize/2){
-    toggleStar = (toggleStar+1)%2;
+    toggleArcs = (toggleArcs+1)%2;
+    if (toggleArcs == 1){
+      toggleStar = 1;
+    }
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*4)<btnSize/2){
-    toggleHue = (toggleHue+1)%2;
+    toggleStar = (toggleStar+1)%2;
+    if (toggleStar == 0){
+      toggleDashboard = 0;
+      toggleArcs = 0;
+    }
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*5)<btnSize/2){
+    toggleHue = (toggleHue+1)%2;
+  }
+  if(dist(mouseX,mouseY, 80,height-80-btnSize*2*6)<btnSize/2){
     cycleBck = (cycleBck+1)%2;
   }
 }

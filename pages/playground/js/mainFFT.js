@@ -13,19 +13,21 @@ function mainFFT(){
     }
 
   //==================FFT ANALYSIS=====================//
-  var spectrum = fft.analyze();
-      
   for (var i=0; i<=11; i++){
     Amplitude[i] = 0;
     
-    for (var j=0; j<NumberOctaves; j++){
+    for (var j=0; j<numberOctaves; j++){
       Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
     }
 
-    Amplitude[i] = Amplitude[i] / NumberOctaves;
+    Amplitude[i] = Amplitude[i] / numberOctaves;
     Amplitude[i] = pow(map(Amplitude[i], 0, 255, 0, 1),(1/amplification));
   }
 
+  //==================GET CENTROID=====================//
+  // spectralCentroid = fft.getCentroid();
+  // spectralCentroid = map(spectralCentroid, 1000,10000,0,255);
+  // cBri = cBri+((spectralCentroid-cBri)/5);
   
   //==================BOUNDS TO POWER REMAPPER=====================//
   var maxIndex = 0;

@@ -15,7 +15,7 @@ class dust_Class {
     }
 
     move(){
-        let targetSpeed = (this.i/5)*(AmplitudeMap[this.i%12]*10);
+        let targetSpeed = (this.i)*(AmplitudeMap[this.i%12]*5);
         this.s = this.s+(targetSpeed-this.s)/dustSmooth;
         this.y = this.y-(this.s*dustSpeed);
 
@@ -31,7 +31,7 @@ class dust_Class {
     }
 
     show(){
-        fill(dustHue, Sat, Bri, dustAlpha/blurNumber);
+        fill(dustHue, Sat, 255, dustAlpha/blurNumber);
         noStroke();
         for(var j=0; j<blurNumber; j++){
             ellipse(this.x, this.y, this.r+(j*blurResolution));
