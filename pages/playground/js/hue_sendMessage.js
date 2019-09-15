@@ -1,4 +1,5 @@
 function hue_sendMessage() { 
+  var lampCount = 4;
   messageCount = (messageCount+1)%lampCount;
 
   if (messageCount==0){
@@ -16,16 +17,22 @@ function hue_sendMessage() {
     var pSat = keySat;
     var pBri = keyBri;
     var url = "https://192.168.1.10/api/EZ6pJKOHH8JOFa2wtNUaKymfSnjYQ6Vh1yCiG0kK/lights/10/state/";
+  } else if (messageCount==3) {
+    var ct = map(spectrumBrightness, 0.2, 0.8, 500, 153);
+    var pBri = keyBri;
+    var url = "https://192.168.1.10/api/EZ6pJKOHH8JOFa2wtNUaKymfSnjYQ6Vh1yCiG0kK/lights/6/state/";
   }
   
   if (maxAmplitude > micCutoff){
-    message = {"hue":int(pHue), "sat":int(pSat), "bri":int(pBri)};   
+    if(messageCount==3){
+      message = {"ct":int(ct), "bri":int(pBri/2)};  
+    } else {
+      message = {"hue":int(pHue), "sat":int(pSat), "bri":int(pBri)};   
+    }
     httpDo(url,"PUT",message);
-
   } else {
-    messageMain = {"bri":int(0)}; 
+    message = {"bri":int(0)}; 
     httpDo(url,"PUT",message);                   
   }
-  
 
 }

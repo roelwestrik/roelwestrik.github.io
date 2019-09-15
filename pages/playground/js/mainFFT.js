@@ -1,39 +1,57 @@
 function mainFFT(){
-    //==================SETUP=====================//
-    MainRadius = (min(width, height))/radiusScale;
+  spectrum = fft.analyze();
+  micLevel = mic.getLevel();
 
-    for (var i=0; i<=11; i++){
-      XCoordinatesSetup[i]=(MainRadius/2-offset)*sin((i*TWO_PI)/12);
-      YCoordinatesSetup[i]=(MainRadius/2-offset)*-cos((i*TWO_PI)/12);
-    }
-  
-    for (var j=0; j<=11; j++){
-      TextLocX[j]=(MainRadius/2+offset*2)*sin((j*TWO_PI)/12);
-      TextLocY[j]=(MainRadius/2+offset*2)*-cos((j*TWO_PI)/12);
-    }
+  //==================SETUP=====================//
+  MainRadius = (min(width, height))/radiusScale;
+
+  for (var i=0; i<=11; i++){
+    XCoordinatesSetup[i]=(MainRadius/2-offset)*sin((i*TWO_PI)/12);
+    YCoordinatesSetup[i]=(MainRadius/2-offset)*-cos((i*TWO_PI)/12);
+  }
+
+  for (var j=0; j<=11; j++){
+    TextLocX[j]=(MainRadius/2+offset*2)*sin((j*TWO_PI)/12);
+    TextLocY[j]=(MainRadius/2+offset*2)*-cos((j*TWO_PI)/12);
+  }
 
   //==================FFT ANALYSIS=====================//
   for (var i=0; i<=11; i++){
     Amplitude[i] = 0;
     
     for (var j=0; j<numberOctaves; j++){
-      Amplitude[i] = Amplitude[i] + fft.getEnergy(Octave[i]*pow(2, j));
+      padding = width/5; 
+      x_ = map(((i*7)%12)+(j*12), 0, 12*numberOctaves, -width/2+padding, width/2-padding);
+      y_ = map(fft.getEnergy((OctaveLower[i]*pow(2, j)), (OctaveUpper[i]*pow(2, j))), 0, 255, 0, spectrumHeight);
+      // y_ = map(fft.getEnergy(Octave[i]*pow(2, j)), 0, 255, 0, spectrumHeight);
+
+      Amplitude[i] = Amplitude[i] + y_;
+
+      SpectrumArrayX[((i*7)%12)+(j*12)]=x_;
+      SpectrumArrayY[((i*7)%12)+(j*12)]=y_;
+
     }
 
     Amplitude[i] = Amplitude[i] / numberOctaves;
-    Amplitude[i] = pow(map(Amplitude[i], 0, 255, 0, 1),(1/amplification));
+    Amplitude[i] = pow(map(Amplitude[i], 0, spectrumHeight, 0, 1),(1/amplification));
   }
 
   //==================GET CENTROID=====================//
-  // spectralCentroid = fft.getCentroid();
-  // spectralCentroid = map(spectralCentroid, 1000,10000,0,255);
-  // cBri = cBri+((spectralCentroid-cBri)/5);
+  maxBrightnessY = SpectrumArrayY[0];
+
+  for (var i=0; i<12*numberOctaves; i++) {
+    if (SpectrumArrayY[i] > maxBrightnessY) {
+      maxIndex = i;
+      maxBrightnessY = SpectrumArrayY[i];
+      maxBrightnessX = SpectrumArrayX[i];
+    }
+  }
+
+  CentroidPosX = CentroidPosX + ((maxBrightnessX-CentroidPosX)/pointerSmoothing);
+
+  spectrumBrightness = map(CentroidPosX, -width/2+padding, width/2-padding, 0, 1);
   
   //==================BOUNDS TO POWER REMAPPER=====================//
-  var maxIndex = 0;
-  var micLevel = mic.getLevel();
-  var amplitudeSum = Amplitude.reduce(getSum);
-
   maxAmplitude = Amplitude[0];
 
   for (var i=0; i<=11; i++) {
@@ -88,8 +106,8 @@ function mainFFT(){
   anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
   
   //==================GET CHASER=====================//
-  var dX = PointerPosX - chaserPosX;
-  var dY = PointerPosY - chaserPosY;
+  let dX = PointerPosX - chaserPosX;
+  let dY = PointerPosY - chaserPosY;
 
   chaserSpeedX = dX/chaserSmoothing;
   chaserSpeedY = dY/chaserSmoothing;
@@ -113,7 +131,7 @@ function mainFFT(){
 
   angleKey = atan2(KeyPosX - 0, KeyPosY - 0);
 
-    //==================GET BRIGHTNESS=====================//
+  //==================GET BRIGHTNESS=====================//
   arrayBri.push(Bri);
   if(arrayBri.length > briSmoothing){
     arrayBri.splice(0, arrayBri.length-briSmoothing);
@@ -130,7 +148,7 @@ function mainFFT(){
   
   //==================THIS WAS THE GOAL=====================//
   Hue = map(angleChaser , PI, PI*-1, 0, 255);
-  Sat = pow(map(dist(chaserPosX, chaserPosY, 0, 0), 0, MainRadius, 0, 1),1/satBoost)*255;
+  Sat = pow(map(dist(chaserPosX, chaserPosY, 0, 0), 0, (MainRadius/2-offset), 0, 1),1/satBoost)*255;
   Bri = pow(avgBri, 1/briBoost)*255;
   keyHue = map(angleKey , PI, PI*-1, 0, 255);
   keySat = pow(map(dist(MainRadius/2*sin(angleKey), MainRadius/2*cos(angleKey), chaserPosX, chaserPosY), 0,MainRadius, 1,0),1/satBoost)*255;
@@ -141,6 +159,5 @@ function mainFFT(){
   print("SAT: " + round(Sat*100)/100 + " & " + round(keySat*100)/100);
   print("BRI: " + round(Bri*100)/100 + " & " + round(keyBri*100)/100);
   print("----------------");
-
     
 }

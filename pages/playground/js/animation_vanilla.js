@@ -1,14 +1,17 @@
-var version = 'v1.24'; 
+var version = 'v1.25'; 
 
 //=========mainFFT=========//
 var mic;  
 var micLevel = 0;
+var fftSmooth = 0.8; 
+var fftRes = 16384;
 var testON = 0;
-var numberOctaves = 6;
-var startingOctave = 2;
+var numberOctaves = 7;
+var startingOctave = 0;
+var OctaveLower = [26.7283, 40.0472, 30.0015, 44.9514, 33.6755, 50.4563, 37.7995, 28.3176, 42.4285, 31.7855, 47.6244, 35.6780];
 var Octave = [27.5000, 41.2034, 30.8677, 46.2493, 34.6478, 51.9131, 38.8909, 29.1352, 43.6535, 32.7032, 48.9994, 36.7081];
+var OctaveUpper = [28.3175, 42.4284, 31.7854, 47.6243, 35.6779, 26.7282, 40.0471, 30.0014, 44.9513, 33.6754, 50.4562, 37.7994];
 var PitchList = ['A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D'];
-var spectralCentroid = 0;
 var spectrum;
 var fps = 0;
 
@@ -53,17 +56,16 @@ var Bri = 0;
 var keyHue = 0;
 var keySat = 0;
 var keyBri = 0;
-var cBri = 0;
 
-var pointerSmoothing = 40;
-var chaserSmoothing = 100;
+var pointerSmoothing = 10;
+var chaserSmoothing = 50;
 var keySmoothing = 400;
 var briSmoothing = 2;
 
 var amplification = 3;
-var PeakSensitivity = 50;
-var micCutoff = 0.1;
-var satBoost = 5;
+var PeakSensitivity = 60;
+var micCutoff = 0.001;
+var satBoost = 3;
 var briBoost = 1;
 
 var radiusScale = 3;
@@ -83,8 +85,8 @@ var PointerTrailLength = pointerSmoothing;
 
 //=========Buttons=========//
 var btnSize = 30;
-var toggleDashboard = 0;
-var toggleArcs = 0;
+var toggleDashboard = 1;
+var toggleArcs = 1;
 var toggleStar = 1;
 var toggleSpectrum = 1;
 var toggleHue = 1;
@@ -102,10 +104,21 @@ var dustHue;
 var dustAlpha;
 
 //=========Philips Hue=========//
-var lampCount = 3;
 var sendCheck = 10;
 var message = 0;
 var messageCount = 0;
+
+//=========Spectrum=========//
+var x_ = 0;
+var y_ = 0; 
+var SpectrumArrayX = [];
+var SpectrumArrayY = [];
+var maxBrightnessX = 0;
+var maxBrightnessY = 0;
+var CentroidPosX = 0;
+var spectrumBrightness = 0;
+var spectrumHeight = 100;
+var padding = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -118,6 +131,8 @@ function setup() {
 
   for(i=0; i<12; i++){
     Octave[i]=Octave[i]*pow(2, startingOctave);
+    OctaveLower[i]=OctaveLower[i]*pow(2, startingOctave);
+    OctaveUpper[i]=OctaveUpper[i]*pow(2, startingOctave);
   }
 
   for(i=0; i<12*dustNumber; i++){
@@ -181,7 +196,7 @@ function draw() {
     //=========Buttons=========//
     btn(80,height-80-btnSize*2*6,btnSize,'Cycle Through Backgrounds', 0);
     btn(80,height-80-btnSize*2*5,btnSize,'Connect to Philips Hue', toggleHue);
-    btn(80,height-80-btnSize*2*4,btnSize,'Toggle Vanilla', toggleStar);
+    btn(80,height-80-btnSize*2*4,btnSize,'Toggle Circle of Fifths', toggleStar);
     btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs', toggleArcs);
     btn(80,height-80-btnSize*2*2,btnSize,'Toggle Dashboard', toggleDashboard);
     btn(80,height-80-btnSize*2*1,btnSize,'Toggle Spectrum', toggleSpectrum);
@@ -209,7 +224,7 @@ function mouseClicked() {
   mic = new p5.AudioIn();
   mic.start();
 
-  fft = new p5.FFT(0.8, 1024);
+  fft = new p5.FFT(fftSmooth, fftRes);
   fft.setInput(mic);
 
   if (getAudioContext().state !== 'running') {
