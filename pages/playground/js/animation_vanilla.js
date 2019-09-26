@@ -1,4 +1,4 @@
-var version = 'v1.25'; 
+var version = 'v1.30'; 
 
 //=========mainFFT=========//
 var mic;  
@@ -64,15 +64,15 @@ var briSmoothing = 2;
 
 var amplification = 3;
 var PeakSensitivity = 60;
-var micCutoff = 0.001;
-var satBoost = 3;
+var micCutoff = 0.01;
+var satBoost = 1;
 var briBoost = 1;
 
 var radiusScale = 3;
 var offset = 32;
 var bckDim = 2;
 
-var TextSize = 16;
+var TextSize = 12;
 var cTime = 0;
 
 //=========vanilla_dashboard=========//
@@ -90,7 +90,7 @@ var toggleArcs = 1;
 var toggleStar = 1;
 var toggleSpectrum = 1;
 var toggleHue = 1;
-var cycleBck = 1;
+var cycleBck = 0;
 
 //=========Dust=========//
 var dust_Particles = [];
@@ -120,6 +120,19 @@ var spectrumBrightness = 0;
 var spectrumHeight = 100;
 var padding = 0;
 
+//=========YingYang=========//
+var yyPosX = 0;
+var yyPosY = 0;
+var yyAngle = 0; 
+var yyPosXArray = [];
+var yyPosYArray = [];
+var yySizeArray = []; 
+var yyTargetAngle = 0; 
+var yyNoiseTime = 0; 
+var yyRadius = 0; 
+var yyTrailLength = 20; 
+
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textAlign(CENTER, CENTER);
@@ -146,7 +159,6 @@ function draw() {
   translate(width/2, height/2);
   colorMode(HSB, 255, 255, 255, 1);
   textAlign(CENTER, CENTER);
-  cTime = millis();
   
   if (int(testON) == 0) {
     fill(255);
@@ -166,7 +178,9 @@ function draw() {
       vanilla_bckgrnd();
     } else if (cycleBck==1){
       dust();
-    } 
+    } else if (cycleBck==2){
+      yingyang();
+    }
           
     //=========Vanilla=========//
     if (toggleStar==1){
@@ -194,6 +208,7 @@ function draw() {
     }
     
     //=========Buttons=========//
+    textSize(TextSize);
     btn(80,height-80-btnSize*2*6,btnSize,'Cycle Through Backgrounds', 0);
     btn(80,height-80-btnSize*2*5,btnSize,'Connect to Philips Hue', toggleHue);
     btn(80,height-80-btnSize*2*4,btnSize,'Toggle Circle of Fifths', toggleStar);
@@ -211,8 +226,8 @@ function draw() {
   fill(255);
   noStroke();
   textAlign(RIGHT, BOTTOM);
-  text(int(cTime/1000) + ' s', width/2-80,height/2-40-TextSize*1.5*2);
-  text(fps + ' FPS', width/2-80,height/2-40-TextSize*1.5*1);
+  textSize(TextSize);
+  // text(fps + ' FPS', width/2-80,height/2-40-TextSize*1.5*1);
   text(version, width/2-80,height/2-40-TextSize*1.5*0);
 
 }
@@ -263,7 +278,7 @@ function mouseClicked() {
     toggleHue = (toggleHue+1)%2;
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*6)<btnSize/2){
-    cycleBck = (cycleBck+1)%2;
+    cycleBck = (cycleBck+1)%3;
   }
 }
 

@@ -1,5 +1,6 @@
 function vanilla_star () {
     var maxPitchRadius = 30;
+    textSize(TextSize);
 
     //=========1 Circle for 12 Pitches=========//
     for (var i=0; i<=11; i++){

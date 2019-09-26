@@ -154,10 +154,10 @@ function mainFFT(){
   keySat = pow(map(dist(MainRadius/2*sin(angleKey), MainRadius/2*cos(angleKey), chaserPosX, chaserPosY), 0,MainRadius, 1,0),1/satBoost)*255;
   keyBri = pow(avgBckBri, 1/briBoost)*(255/bckDim);
 
-  print("V A L U E S:");
-  print("HUE: " + round(Hue*100)/100 + " & " + round(keyHue*100)/100);
-  print("SAT: " + round(Sat*100)/100 + " & " + round(keySat*100)/100);
-  print("BRI: " + round(Bri*100)/100 + " & " + round(keyBri*100)/100);
-  print("----------------");
+  // print("V A L U E S:");
+  // print("HUE: " + round(Hue*100)/100 + " & " + round(keyHue*100)/100);
+  // print("SAT: " + round(Sat*100)/100 + " & " + round(keySat*100)/100);
+  // print("BRI: " + round(Bri*100)/100 + " & " + round(keyBri*100)/100);
+  // print("----------------");
     
 }
