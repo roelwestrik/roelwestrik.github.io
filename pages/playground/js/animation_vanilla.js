@@ -1,4 +1,4 @@
-var version = 'v1.30'; 
+var version = 'v1.32'; 
 
 //=========mainFFT=========//
 var mic;  
@@ -65,7 +65,7 @@ var briSmoothing = 2;
 var amplification = 3;
 var PeakSensitivity = 60;
 var micCutoff = 0.01;
-var satBoost = 1;
+var satBoost = 2;
 var briBoost = 1;
 
 var radiusScale = 3;
@@ -122,15 +122,25 @@ var padding = 0;
 
 //=========YingYang=========//
 var yyPosX = 0;
+var yyTargetPosX = 0;
 var yyPosY = 0;
+var yyTargetPosY = 0;
 var yyAngle = 0; 
+var yyTargetAngle = 0; 
+var yyRadius = 0; 
+var yyTargetRadius = 0; 
 var yyPosXArray = [];
 var yyPosYArray = [];
-var yySizeArray = []; 
-var yyTargetAngle = 0; 
-var yyNoiseTime = 0; 
-var yyRadius = 0; 
-var yyTrailLength = 20; 
+var yySize1Array = []; 
+var yySize2Array = []; 
+var yyTrailLength = 50; 
+
+//=========BookCase & LCD=========//
+var bNoiseTime = 0; 
+var bBookSize = 10; 
+var bPixelSize = 40; 
+var bPixelDistance = 5; 
+var bMaxSpeed = 0.01; 
 
 
 function setup() {
@@ -180,6 +190,10 @@ function draw() {
       dust();
     } else if (cycleBck==2){
       yingyang();
+    } else if (cycleBck==3){
+      bookcase();
+    } else if (cycleBck==4){
+      LCD();
     }
           
     //=========Vanilla=========//
@@ -278,7 +292,7 @@ function mouseClicked() {
     toggleHue = (toggleHue+1)%2;
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*6)<btnSize/2){
-    cycleBck = (cycleBck+1)%3;
+    cycleBck = (cycleBck+1)%5;
   }
 }
 

@@ -89,6 +89,7 @@ function mainFFT(){
       PointerPosY = 0;
 
       Bri = 0;
+      Sat = 255; 
     }
 
   //==================GET POINTER=====================//
@@ -152,7 +153,7 @@ function mainFFT(){
   Bri = pow(avgBri, 1/briBoost)*255;
   keyHue = map(angleKey , PI, PI*-1, 0, 255);
   keySat = pow(map(dist(MainRadius/2*sin(angleKey), MainRadius/2*cos(angleKey), chaserPosX, chaserPosY), 0,MainRadius, 1,0),1/satBoost)*255;
-  keyBri = pow(avgBckBri, 1/briBoost)*(255/bckDim);
+  keyBri = pow(avgBckBri, 1/briBoost)*255;
 
   // print("V A L U E S:");
   // print("HUE: " + round(Hue*100)/100 + " & " + round(keyHue*100)/100);

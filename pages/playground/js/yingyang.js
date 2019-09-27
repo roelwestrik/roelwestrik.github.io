@@ -1,37 +1,42 @@
 function yingyang () {
-    let yyMaxSize = min(width, height)/4; 
-    yyNoiseTime = yyNoiseTime + map(Sat, 0, 255, 0.05, 0); 
+    let yyMaxSize = min(width, height)/2; 
     
-    let yyNoiseAngle = noise(yyNoiseTime);
-    let yyNoiseSize = map(noise(yyNoiseTime), 0, 1, -yyMaxSize/3, yyMaxSize/3);
+    let yySize1 = map(Bri, 0, 255, 0, yyMaxSize);
+    let yySize2 = map(keyBri, 0, 255, 0, yyMaxSize);
+    let yyStepSize = map(Bri, 0, 255, 0, TWO_PI/-100); 
+    
+    let yyAvgX = (((MainRadius/2)*sin(anglePointer))+((MainRadius/2)*sin(angleKey)))/2;
+    let yyAvgY = (((MainRadius/2)*cos(anglePointer))+((MainRadius/2)*cos(angleKey)))/2;
+    
+    let yyTargetRadius = map(dist(0,0,yyAvgX,yyAvgY), 0, MainRadius/2, min(width, height)/2, 0); 
+    // let yySizeOffset = (yySize/2)*sin(frameCount/100);
 
-    let yySize = map(Bri, 0, 255, 0, yyMaxSize);
-    let yyStepSize = ((Bri/255)*(TWO_PI/20)); 
-    let yyTargetRadius = map(Sat, 0, 255, min(width, height)/2, 0);
-    yyTargetAngle = yyTargetAngle + map(yyNoiseAngle, 0, 1, -yyStepSize, yyStepSize);
- 
+    yyTargetAngle = yyTargetAngle + yyStepSize;
+
     yyAngle = yyAngle + ((yyTargetAngle - yyAngle)/50); 
-    yyRadius = yyRadius + ((yyTargetRadius - yyRadius)/50); 
+    yyRadius = yyRadius + ((yyTargetRadius - yyRadius)/200); 
 
-    yyPosX = yyRadius * sin(yyAngle); 
-    yyPosY = yyRadius * cos(yyAngle); 
+    yyPosX = yyRadius * sin(yyTargetAngle); 
+    yyPosY = yyRadius * cos(yyTargetAngle); 
 
     yyPosXArray.push(yyPosX);
     yyPosYArray.push(yyPosY);
-    yySizeArray.push(yySize);
+    yySize1Array.push(yySize1);
+    yySize2Array.push(yySize2);
 
-    if (yySizeArray.length > yyTrailLength){
+    if (yySize1Array.length > yyTrailLength){
         yyPosXArray.splice(0,yyPosXArray.length - yyTrailLength);
         yyPosYArray.splice(0,yyPosYArray.length - yyTrailLength);
-        yySizeArray.splice(0,yySizeArray.length - yyTrailLength);
+        yySize1Array.splice(0,yySize1Array.length - yyTrailLength);
+        yySize2Array.splice(0,yySize2Array.length - yyTrailLength);
     }
 
     noStroke();
-    for (i=0; i<yySizeArray.length; i++){
-        // fill(255, (1-(1/(i+1)))/(map(Bri, 0, 255, 25, 1)));
-        fill(255, 1/map(Bri, 0, 255, yySizeArray.length, 1));
-        ellipse(yyPosXArray[i], yyPosYArray[i], (yySizeArray[i]+yyNoiseSize)*(i/yySizeArray.length));
-        ellipse(-yyPosXArray[i], -yyPosYArray[i], (yySizeArray[i]-yyNoiseSize)*(i/yySizeArray.length));
+    for (i=0; i<yySize1Array.length; i++){
+        fill(Hue, Sat, 255, 1/map(Bri, 0, 255, yySize1Array.length, 1));
+        ellipse(yyPosXArray[i], yyPosYArray[i], (yySize1Array[i])*(i/yySize1Array.length));
+        fill(keyHue, keySat, 255, 1/map(keyBri, 0, 255, yySize1Array.length, 1));
+        ellipse(-yyPosXArray[i], -yyPosYArray[i], (yySize2Array[i])*(i/yySize2Array.length));
     }
 
     // noFill();

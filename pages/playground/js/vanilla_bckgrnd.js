@@ -1,7 +1,7 @@
 function vanilla_bckgrnd () {
   var glowRings = 5;
   
-  background(keyHue, keySat, keyBri);
+  background(keyHue, keySat, keyBri/bckDim);
   
   //=========Glowing Circle==========//
   fill(Hue, Sat, Bri, 1/glowRings);
