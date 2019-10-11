@@ -1,4 +1,4 @@
-var version = 'v1.4'; 
+var version = 'v1.41'; 
 
 //=========mainFFT=========//
 var mic;  
@@ -211,14 +211,16 @@ function draw() {
     textAlign(LEFT, CENTER);
     text('Press/Touch anywhere to start.', -200, 0);
     textSize(TextSize);
-    text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 50);
+    text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 25);
+    text('Click anywhere to continue', -200, 50);
 
   } else if (int(testON) == 1) {
     textAlign(LEFT, CENTER);
     textSize(TextSize*1.5);
     text('This is the circle of fifths.', -200, 300);
     textSize(TextSize);
-    text('It converts your microphone input to a color.', -200, 350);
+    text('It converts your microphone input to a color.', -200, 325);
+    text('Click anywhere to continue', -200, 350);
     mainFFT();
     vanilla_star();
 
@@ -227,7 +229,8 @@ function draw() {
     textSize(TextSize*1.5);
     text('This is the spectrum.', -200, 300);
     textSize(TextSize);
-    text('It provides more information on the music you"re hearing.', -200, 350);
+    text('It provides more information on the music you"re hearing.', -200, 325);
+    text('Click anywhere to continue', -200, 350);
     mainFFT();
     vanilla_star();
     vanilla_spectrum(); 
@@ -241,6 +244,7 @@ function draw() {
       fill(255, 1); 
       text('Press the buttons to toggle modules and change the background', -200, 300);
       textSize(TextSize);
+      text('Click the top button to continue.', -200, 325);
       text('Now have some fun!', -200, 350);
     }
           
