@@ -1,9 +1,9 @@
-var version = 'v1.32'; 
+var version = 'v1.4'; 
 
 //=========mainFFT=========//
 var mic;  
 var micLevel = 0;
-var fftSmooth = 0.8; 
+var fftSmooth = 0.01; 
 var fftRes = 16384;
 var testON = 0;
 var numberOctaves = 7;
@@ -14,6 +14,12 @@ var OctaveUpper = [28.3175, 42.4284, 31.7854, 47.6243, 35.6779, 26.7282, 40.0471
 var PitchList = ['A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D'];
 var spectrum;
 var fps = 0;
+
+var amplification = 2;
+var PeakSensitivity = 70;
+var micCutoff = 0.05;
+var satBoost = 2;
+var briBoost = 1;
 
 var MainRadius = 0;
 var XCoordinatesSetup = [];
@@ -62,12 +68,6 @@ var chaserSmoothing = 50;
 var keySmoothing = 400;
 var briSmoothing = 2;
 
-var amplification = 3;
-var PeakSensitivity = 60;
-var micCutoff = 0.01;
-var satBoost = 2;
-var briBoost = 1;
-
 var radiusScale = 3;
 var offset = 32;
 var bckDim = 2;
@@ -83,6 +83,18 @@ var ChaserTrailLength = chaserSmoothing;
 var PointerTrail = [];
 var PointerTrailLength = pointerSmoothing;
 
+//=========Spectrum=========//
+var x_ = 0;
+var y_ = 0; 
+var SpectrumArrayX = [];
+var SpectrumArrayY = [];
+var maxBrightnessX = 0;
+var maxBrightnessY = 0;
+var CentroidPosX = 0;
+var spectrumBrightness = 0;
+var spectrumHeight = 100;
+var padding = 0;
+
 //=========Buttons=========//
 var btnSize = 30;
 var toggleDashboard = 1;
@@ -90,7 +102,7 @@ var toggleArcs = 1;
 var toggleStar = 1;
 var toggleSpectrum = 1;
 var toggleHue = 1;
-var cycleBck = 0;
+var cycleBck = 7;
 
 //=========Dust=========//
 var dust_Particles = [];
@@ -108,18 +120,6 @@ var sendCheck = 10;
 var message = 0;
 var messageCount = 0;
 
-//=========Spectrum=========//
-var x_ = 0;
-var y_ = 0; 
-var SpectrumArrayX = [];
-var SpectrumArrayY = [];
-var maxBrightnessX = 0;
-var maxBrightnessY = 0;
-var CentroidPosX = 0;
-var spectrumBrightness = 0;
-var spectrumHeight = 100;
-var padding = 0;
-
 //=========YingYang=========//
 var yyPosX = 0;
 var yyTargetPosX = 0;
@@ -136,12 +136,34 @@ var yySize2Array = [];
 var yyTrailLength = 50; 
 
 //=========BookCase & LCD=========//
-var bNoiseTime = 0; 
-var bBookSize = 10; 
-var bPixelSize = 40; 
-var bPixelDistance = 5; 
+var noiseTime = 0; 
 var bMaxSpeed = 0.01; 
+var pMaxSpeed = 0.02; 
+var bookSize = 4; 
+var bNoiseScale = 0.1;
+var pixelSize = 60; 
+var pNoiseScale = 5; 
+var pixelDistance = 5; 
 
+//=========Cave==========//
+var cave_elements = [];
+var caveEmitter = 5; 
+var caveNumber = 50;
+var caveIndex = 0; 
+var caveSpeed = 1.002;
+
+//=========Fountain==========//
+var fountain_array = []; 
+var fountain_counter = 0; 
+var fountainCountCheck = 0; 
+
+//=========Fountain==========//
+var starNumber = 100; 
+var star_Array = [];
+var starPosX_array = [];
+var starPosY_array = [];
+var starSize_array = [];
+var starAlpha_array = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -161,6 +183,18 @@ function setup() {
   for(i=0; i<12*dustNumber; i++){
     dust_Particles[i] = new dust_Class(random(-width/2,width/2), random(-height/2,height/2), random(0, width/8), 0, 0, i);
   }
+  
+  for (i=0; i<12 * (starNumber/2); i++){
+    starPosX_array[i] = random((-width/2), (width/2));
+    starPosY_array[i] = random((-height/2), (height/2));
+    starSize_array[i] = random(0, 1);
+  }
+
+  for(i=0; i<12*starNumber; i++){
+    let index = i % (12*(starNumber/2)+1); 
+    star_Array[i] = new star_class(i, starPosX_array[index], starPosY_array[index], starSize_array[index]); 
+  }
+
 }
 
 function draw() {
@@ -179,23 +213,61 @@ function draw() {
     textSize(TextSize);
     text('Please allow microphone acces when prompted so I can sell your data to the russians.', -200, 50);
 
+  } else if (int(testON) == 1) {
+    textAlign(LEFT, CENTER);
+    textSize(TextSize*1.5);
+    text('This is the circle of fifths.', -200, 300);
+    textSize(TextSize);
+    text('It converts your microphone input to a color.', -200, 350);
+    mainFFT();
+    vanilla_star();
+
+  } else if (int(testON) == 2) {
+    textAlign(LEFT, CENTER);
+    textSize(TextSize*1.5);
+    text('This is the spectrum.', -200, 300);
+    textSize(TextSize);
+    text('It provides more information on the music you"re hearing.', -200, 350);
+    mainFFT();
+    vanilla_star();
+    vanilla_spectrum(); 
+
   } else {
+    
+    if (int(testON) == 3) {
+      background(0);
+      textAlign(LEFT, CENTER);
+      textSize(TextSize*1.5);
+      fill(255, 1); 
+      text('Press the buttons to toggle modules and change the background', -200, 300);
+      textSize(TextSize);
+      text('Now have some fun!', -200, 350);
+    }
+          
     //=========MainFFT=========//
     mainFFT();
 
     //=========Backgrounds=========//
-    if (cycleBck==0){
-      vanilla_bckgrnd();
-    } else if (cycleBck==1){
-      dust();
-    } else if (cycleBck==2){
-      yingyang();
-    } else if (cycleBck==3){
-      bookcase();
-    } else if (cycleBck==4){
-      LCD();
+    if(testON > 3){
+      if (cycleBck==0){
+        vanilla_bckgrnd();
+      } else if (cycleBck==1){
+        dust();
+      } else if (cycleBck==2){
+        yingyang();
+      } else if (cycleBck==3){
+        bookcase();
+      } else if (cycleBck==4){
+        LCD();
+      } else if (cycleBck==5){
+        cave();
+      } else if (cycleBck==6){
+        fountain();
+      } else if (cycleBck==7){
+        stars();
+      } 
     }
-          
+        
     //=========Vanilla=========//
     if (toggleStar==1){
       vanilla_star();
@@ -241,14 +313,13 @@ function draw() {
   noStroke();
   textAlign(RIGHT, BOTTOM);
   textSize(TextSize);
-  // text(fps + ' FPS', width/2-80,height/2-40-TextSize*1.5*1);
+  text(fps + ' FPS', width/2-80,height/2-40-TextSize*1.5*1);
   text(version, width/2-80,height/2-40-TextSize*1.5*0);
 
 }
 
 function mouseClicked() {
   if (testON == 0){
-  testON = 1;
 
   mic = new p5.AudioIn();
   mic.start();
@@ -260,6 +331,10 @@ function mouseClicked() {
     getAudioContext().resume();
     }
   } 
+
+  if (testON < 3) {
+    testON = testON + 1; 
+  }
 
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*0)<btnSize/2){
     window.open('../../../', '_self');
@@ -292,7 +367,8 @@ function mouseClicked() {
     toggleHue = (toggleHue+1)%2;
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*6)<btnSize/2){
-    cycleBck = (cycleBck+1)%5;
+    cycleBck = (cycleBck+1)%8;
+    testON = 4; 
   }
 }
 

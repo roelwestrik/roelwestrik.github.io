@@ -1,14 +1,15 @@
 function yingyang () {
-    let yyMaxSize = min(width, height)/2; 
+    let yyMaxSize = min(width, height); 
     
     let yySize1 = map(Bri, 0, 255, 0, yyMaxSize);
     let yySize2 = map(keyBri, 0, 255, 0, yyMaxSize);
-    let yyStepSize = map(Bri, 0, 255, 0, TWO_PI/-100); 
+    let yyStepSize = map(Bri, 0, 255, 0, TWO_PI/-200); 
     
-    let yyAvgX = (((MainRadius/2)*sin(anglePointer))+((MainRadius/2)*sin(angleKey)))/2;
-    let yyAvgY = (((MainRadius/2)*cos(anglePointer))+((MainRadius/2)*cos(angleKey)))/2;
+    // let yyAvgX = (((MainRadius/2)*sin(anglePointer))+((MainRadius/2)*sin(angleKey)))/2;
+    // let yyAvgY = (((MainRadius/2)*cos(anglePointer))+((MainRadius/2)*cos(angleKey)))/2;
     
-    let yyTargetRadius = map(dist(0,0,yyAvgX,yyAvgY), 0, MainRadius/2, min(width, height)/2, 0); 
+    // let yyTargetRadius = map(dist(0,0,yyAvgX,yyAvgY), 0, MainRadius/2, max(width, height)/1, 0); 
+    let yyTargetRadius = map(keySat, 0, 255, max(width, height)/2, 0); 
     // let yySizeOffset = (yySize/2)*sin(frameCount/100);
 
     yyTargetAngle = yyTargetAngle + yyStepSize;

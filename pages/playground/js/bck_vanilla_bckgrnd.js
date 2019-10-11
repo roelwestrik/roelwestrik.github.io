@@ -8,7 +8,7 @@ function vanilla_bckgrnd () {
   noStroke();
 
   for (i=1; i<=glowRings; i++) {
-    ellipse(0,0,(MainRadius+offset)+(avgBri*MainRadius/(glowRings/i)));
+    ellipse(0,0,(MainRadius+offset)+(2*avgBri*MainRadius/(glowRings/i)));
   }
 
   //=========Main Circle==========//

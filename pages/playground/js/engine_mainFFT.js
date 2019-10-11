@@ -1,6 +1,6 @@
 function mainFFT(){
   spectrum = fft.analyze();
-  micLevel = mic.getLevel();
+  // micLevel = mic.getLevel();
 
   //==================SETUP=====================//
   MainRadius = (min(width, height))/radiusScale;
@@ -61,6 +61,7 @@ function mainFFT(){
     }
   }
 
+
   if (maxAmplitude > micCutoff){
     for (var i=0; i<=11; i++){
       AmplitudeMap[i]=map(Amplitude[i], 0, maxAmplitude, 0, 1);
@@ -90,6 +91,7 @@ function mainFFT(){
 
       Bri = 0;
       Sat = 255; 
+
     }
 
   //==================GET POINTER=====================//
@@ -159,6 +161,7 @@ function mainFFT(){
   // print("HUE: " + round(Hue*100)/100 + " & " + round(keyHue*100)/100);
   // print("SAT: " + round(Sat*100)/100 + " & " + round(keySat*100)/100);
   // print("BRI: " + round(Bri*100)/100 + " & " + round(keyBri*100)/100);
+  // print("Miclevel: " + maxAmplitude.toFixed(2) + "/1")
   // print("----------------");
     
 }
