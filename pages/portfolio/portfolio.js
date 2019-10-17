@@ -40,6 +40,9 @@ function preload(){
 
     transparancy = loadImage('/../../imgs/transparancy.png');
     rainbow = loadImage('/../../imgs/rainbow.png');
+
+    DIN = loadFont('../../fonts/D-DIN.otf');
+
 }
 
 function setup () {
