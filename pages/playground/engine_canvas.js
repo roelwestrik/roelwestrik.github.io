@@ -1,4 +1,4 @@
-var version = 'v1.41'; 
+var version = 'v1.42'; 
 
 //=========mainFFT=========//
 var mic;  
@@ -72,7 +72,7 @@ var radiusScale = 3;
 var offset = 32;
 var bckDim = 2;
 
-var TextSize = 12;
+var TextSize = 18;
 var cTime = 0;
 
 //=========vanilla_dashboard=========//
@@ -102,7 +102,7 @@ var toggleArcs = 1;
 var toggleStar = 1;
 var toggleSpectrum = 1;
 var toggleHue = 1;
-var cycleBck = 7;
+var cycleBck = 0;
 
 //=========Dust=========//
 var dust_Particles = [];
@@ -165,11 +165,18 @@ var starPosY_array = [];
 var starSize_array = [];
 var starAlpha_array = [];
 
+var DIN; 
+
+function preload(){
+  DIN = loadFont('../../fonts/D-DIN.otf');
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textAlign(CENTER, CENTER);
   strokeCap(SQUARE);
   textSize(TextSize);
+  textFont(DIN);
   angleMode(RADIANS);
 
   var audioContext = getAudioContext();
@@ -221,6 +228,7 @@ function draw() {
     textSize(TextSize);
     text('It converts your microphone input to a color.', -200, 325);
     text('Click anywhere to continue', -200, 350);
+
     mainFFT();
     vanilla_star();
 
@@ -231,46 +239,56 @@ function draw() {
     textSize(TextSize);
     text('It provides more information on the music you"re hearing.', -200, 325);
     text('Click anywhere to continue', -200, 350);
+
     mainFFT();
     vanilla_star();
     vanilla_spectrum(); 
 
-  } else {
-    
-    if (int(testON) == 3) {
+  } else if (int(testON) == 3) {
       background(0);
       textAlign(LEFT, CENTER);
       textSize(TextSize*1.5);
       fill(255, 1); 
       text('Press the buttons to toggle modules and change the background', -200, 300);
       textSize(TextSize);
-      text('Click the top button to continue.', -200, 325);
-      text('Now have some fun!', -200, 350);
-    }
+      text('Try out your own configurations.', -200, 325);
+      text('Click anywhere to continue', -200, 350);
+
+      mainFFT();
+      vanilla_star();
+      vanilla_spectrum(); 
+      textSize(TextSize);
+      btn(80,height-80-btnSize*2*6,btnSize,'Cycle Through Backgrounds', 0);
+      btn(80,height-80-btnSize*2*5,btnSize,'Connect to Philips Hue', toggleHue);
+      btn(80,height-80-btnSize*2*4,btnSize,'Toggle Circle of Fifths', toggleStar);
+      btn(80,height-80-btnSize*2*3,btnSize,'Toggle Arcs', toggleArcs);
+      btn(80,height-80-btnSize*2*2,btnSize,'Toggle Dashboard', toggleDashboard);
+      btn(80,height-80-btnSize*2*1,btnSize,'Toggle Spectrum', toggleSpectrum);
+      btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage', 0);
+
+    } else if (int(testON) > 3) {
           
     //=========MainFFT=========//
     mainFFT();
 
     //=========Backgrounds=========//
-    if(testON > 3){
-      if (cycleBck==0){
-        vanilla_bckgrnd();
-      } else if (cycleBck==1){
-        dust();
-      } else if (cycleBck==2){
-        yingyang();
-      } else if (cycleBck==3){
-        bookcase();
-      } else if (cycleBck==4){
-        LCD();
-      } else if (cycleBck==5){
-        cave();
-      } else if (cycleBck==6){
-        fountain();
-      } else if (cycleBck==7){
-        stars();
-      } 
-    }
+    if (cycleBck==0){
+      vanilla_bckgrnd();
+    } else if (cycleBck==1){
+      dust();
+    } else if (cycleBck==2){
+      yingyang();
+    } else if (cycleBck==3){
+      bookcase();
+    } else if (cycleBck==4){
+      LCD();
+    } else if (cycleBck==5){
+      cave();
+    } else if (cycleBck==6){
+      fountain();
+    } else if (cycleBck==7){
+      stars();
+    } 
         
     //=========Vanilla=========//
     if (toggleStar==1){
@@ -335,10 +353,8 @@ function mouseClicked() {
     getAudioContext().resume();
     }
   } 
-
-  if (testON < 3) {
-    testON = testON + 1; 
-  }
+  
+  testON = testON + 1; 
 
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*0)<btnSize/2){
     window.open('../../../', '_self');
@@ -372,7 +388,6 @@ function mouseClicked() {
   }
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*6)<btnSize/2){
     cycleBck = (cycleBck+1)%8;
-    testON = 4; 
   }
 }
 
