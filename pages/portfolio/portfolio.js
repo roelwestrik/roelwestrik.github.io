@@ -17,11 +17,17 @@ var buttonSize;
 var smoothing = 0.15;
 
 //=========Buttons=========//
+var buttonArray = [];
+var buttonTextArray = []; 
+var buttonFunctionArray = [];
 var btnSize = 30;
 
 var inRed = 0;
 var inYellow = 0;
 var inBlue = 0;
+var inCV = 0;
+var inProfile = 0; 
+var inPortfolio = 0; 
 
 var DIN;
 
@@ -30,6 +36,7 @@ function preload(){
     mainbackred = loadImage('/../../imgs/redbutton.png');
     mainbackyellow = loadImage('/../../imgs/yellowbutton.png');
     mainbackblue = loadImage('/../../imgs/bluebutton.png');
+    whitebuttons = loadImage('/../../imgs/White Buttons.png');
 
     transparancy = loadImage('/../../imgs/transparancy.png');
     rainbow = loadImage('/../../imgs/rainbow.png');
@@ -42,6 +49,19 @@ function setup () {
     colorMode(RGB,255,255,255,255);
     
     imageMode(CENTER);
+
+    buttonTextArray[0] = str('Back to Frontpage');
+    buttonTextArray[1] = str('Download Portfolio');
+    buttonTextArray[2] = str('Download CV');
+    buttonTextArray[3] = str('My Profile');
+
+    for(i=0; i<buttonTextArray.length; i++){
+        buttonFunctionArray[i] = 0;
+    }
+
+    for (i=0; i<buttonTextArray.length; i++){
+        buttonArray[i] = new button_class(80,height-80-btnSize*2*i,btnSize,buttonTextArray[i], i);
+    }
     
 }
 
@@ -117,11 +137,12 @@ function draw () {
     tint(255, currentopacityblue);
     image(mainbackblue, 0, 0, imageSize, imageSize);
 
-    if (inRed == 1 || inYellow == 1 || inBlue == 1){
+    if (inRed == 1 || inYellow == 1 || inBlue == 1 || buttonFunctionArray.reduce(getSum)>=1){
         cursor('HAND');
     }
 
-    btn(80,height-80-btnSize*2*0,btnSize,'Back to Frontpage', 0);
+
+    btn();
 
     fill(255);
     textSize(34);
@@ -132,7 +153,7 @@ function draw () {
 }
 
 function windowResized() {
-    resizeCanvas(windowWidth-10, windowHeight-20);
+    resizeCanvas(windowWidth, windowHeight);
   }
 
   function mouseClicked(){
@@ -146,9 +167,23 @@ function windowResized() {
         modal1();
       }
 
-      if (dist(-windowWidth/2+80,windowHeight/2-80, mouseX-width/2, mouseY-height/2)<btnSize){
+      if (buttonFunctionArray[0] == 1){
         window.open("../../", "_self");
+      }
+
+      if (buttonFunctionArray[1] == 1){
+        window.open("../portfolio_extern/Portfolio.pdf"); 
+      }
+
+      if (buttonFunctionArray[2] == 1){
+        window.open("../portfolio_extern/CV.pdf"); 
+      }
+
+      if (buttonFunctionArray[3] == 1){
+        modalProfile();
       }
   }
 
- 
+  function getSum(total, num) {
+    return total + num;
+  }
