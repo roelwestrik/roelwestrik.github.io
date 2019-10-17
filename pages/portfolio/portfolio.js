@@ -46,7 +46,7 @@ function preload(){
 }
 
 function setup () {
-    createCanvas(windowWidth-10, windowHeight-20, WEBGL);
+    createCanvas(windowWidth, windowHeight, WEBGL);
     colorMode(RGB,255,255,255,255);
     
     imageMode(CENTER);
