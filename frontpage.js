@@ -128,13 +128,13 @@ function windowResized() {
 
 function mouseClicked(){
     if (inRed == 1 && inYellow == 0 && inBlue == 0){
-        window.open("https://www.youtube.com/watch?v=PDnuNYRCs4A&list=UUmzIQbKRPatHGDwSaesC8vw&index=68", "_self");
+        window.open("music", "_self");
     }
     if (inRed == 0 && inYellow == 1 && inBlue == 0){
-        window.open("pages/playground", "_self");
+        window.open("playground", "_self");
     }
     if (inRed == 0 && inYellow == 0 && inBlue == 1){
-        window.open("pages/portfolio", "_self");
+        window.open("portfolio", "_self");
     }
 }
 

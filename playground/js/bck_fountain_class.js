@@ -10,15 +10,15 @@ class fountain_class {
         this.mult = mult; 
 
         this.age = 0;
-        this.noiseScale = map(this.sat, 0, 255, 1, 20);
+        this.noiseScale = map(this.sat, 0, 255, 1, 50);
         this.fountainPosX = map(noise(this.id/this.noiseScale), 0, 1, -width/2, width/2); 
         this.fountainPosY = map(noise((this.id+50)/this.noiseScale), 0, 1, -height/2, height/2);
         this.fountainSize = 0;
         this.speed = 0; 
 
-        noStroke();
-        fill(this.hue, this.sat, this.bri, 1); 
-        ellipse(this.fountainPosX, this.fountainPosY, map(this.bri, 0, 255, 0, 5)); 
+        // noStroke();
+        // fill(this.hue, this.sat, this.bri, 1); 
+        // ellipse(this.fountainPosX, this.fountainPosY, map(this.bri, 0, 255, 0, 50)); 
     }
 
     fountain_noise() {
@@ -44,6 +44,7 @@ class fountain_class {
 
     scale(){
         this.fountainSize = this.fountainSize + (this.ds);
+        
     }
 
     show(maxAge){

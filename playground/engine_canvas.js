@@ -7,11 +7,10 @@ var fftSmooth = 0.01;
 var fftRes = 16384;
 var testON = 0;
 var numberOctaves = 7;
-var startingOctave = 0;
-var OctaveLower = [26.7283, 40.0472, 30.0015, 44.9514, 33.6755, 50.4563, 37.7995, 28.3176, 42.4285, 31.7855, 47.6244, 35.6780];
-var Octave = [27.5000, 41.2034, 30.8677, 46.2493, 34.6478, 51.9131, 38.8909, 29.1352, 43.6535, 32.7032, 48.9994, 36.7081];
-var OctaveUpper = [28.3175, 42.4284, 31.7854, 47.6243, 35.6779, 26.7282, 40.0471, 30.0014, 44.9513, 33.6754, 50.4562, 37.7994];
-var PitchList = ['A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D'];
+var OctaveLower =   [26.7283, 40.0472, 30.0015, 44.9514, 33.6755, 50.4563, 37.7995, 28.3176, 42.4285, 31.7855, 47.6244, 35.6780];
+var Octave =        [27.5000, 41.2034, 30.8677, 46.2493, 34.6478, 51.9131, 38.8909, 29.1352, 43.6535, 32.7032, 48.9994, 36.7081];
+var OctaveUpper =   [28.3175, 42.4284, 31.7854, 47.6243, 35.6779, 53.4564, 40.0471, 30.0014, 44.9513, 33.6754, 50.4562, 37.7994];
+var PitchList =       ['A',     'E',     'B',     'F#',    'C#',    'Ab',    'Eb',    'Bb',    'F',     'C',     'G',     'D'];
 var spectrum;
 var fps = 0;
 
@@ -44,9 +43,9 @@ var chaserPosY = 0;
 var chaserSpeedX = 0;
 var chaserSpeedY = 0;
 var angleChaser = 0;
-
 var arrayChaserPosX = [];
 var arrayChaserPosY = [];
+
 var KeyPosX = 0;
 var KeyPosY = 0;
 var angleKey = 0;
@@ -181,12 +180,6 @@ function setup() {
 
   var audioContext = getAudioContext();
 
-  for(i=0; i<12; i++){
-    Octave[i]=Octave[i]*pow(2, startingOctave);
-    OctaveLower[i]=OctaveLower[i]*pow(2, startingOctave);
-    OctaveUpper[i]=OctaveUpper[i]*pow(2, startingOctave);
-  }
-
   for(i=0; i<12*dustNumber; i++){
     dust_Particles[i] = new dust_Class(random(-width/2,width/2), random(-height/2,height/2), random(0, width/8), 0, 0, i);
   }
@@ -287,8 +280,8 @@ function draw() {
     } else if (cycleBck==6){
       fountain();
     } else if (cycleBck==7){
-      stars();
-    } 
+      
+    }
         
     //=========Vanilla=========//
     if (toggleStar==1){
@@ -357,7 +350,7 @@ function mouseClicked() {
   testON = testON + 1; 
 
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*0)<btnSize/2){
-    window.open('../../../', '_self');
+    window.open('../../', '_self');
   }
 
   if(dist(mouseX,mouseY, 80,height-80-btnSize*2*1)<btnSize/2){

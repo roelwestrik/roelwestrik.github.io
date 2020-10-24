@@ -1,3 +1,8 @@
+// adress: https://192.168.1.27/debug/clip.html
+// adress Petra Thuis: http://192.168.2.1/debug/clip.html
+// API: /api/EZ6pJKOHH8JOFa2wtNUaKymfSnjYQ6Vh1yCiG0kK/
+// API PETRA THUIS: /api/ysTUuZNkoCjefBLNAaePZfsoNoyY5gZfVgEFUkUH/
+
 function hue_sendMessage() { 
   var lampCount = 4;
   messageCount = (messageCount+1)%lampCount;

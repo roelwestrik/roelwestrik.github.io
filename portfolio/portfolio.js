@@ -32,16 +32,16 @@ var inPortfolio = 0;
 var DIN;
 
 function preload(){
-    mainback = loadImage('/../../imgs/background.png');
-    mainbackred = loadImage('/../../imgs/redbutton.png');
-    mainbackyellow = loadImage('/../../imgs/yellowbutton.png');
-    mainbackblue = loadImage('/../../imgs/bluebutton.png');
-    whitebuttons = loadImage('/../../imgs/White Buttons.png');
+    mainback = loadImage('/../imgs/background.png');
+    mainbackred = loadImage('/../imgs/redbutton.png');
+    mainbackyellow = loadImage('/../imgs/yellowbutton.png');
+    mainbackblue = loadImage('/../imgs/bluebutton.png');
+    whitebuttons = loadImage('/../imgs/White Buttons.png');
 
-    transparancy = loadImage('/../../imgs/transparancy.png');
-    rainbow = loadImage('/../../imgs/rainbow.png');
+    transparancy = loadImage('/../imgs/transparancy.png');
+    rainbow = loadImage('/../imgs/rainbow.png');
 
-    DIN = loadFont('../../fonts/D-DIN.otf');
+    DIN = loadFont('../fonts/D-DIN.otf');
 
 }
 
@@ -169,15 +169,15 @@ function windowResized() {
       }
 
       if (buttonFunctionArray[0] == 1){
-        window.open("../../", "_self");
+        window.open("../", "_self");
       }
 
       if (buttonFunctionArray[1] == 1){
-        window.open("../portfolio_extern/Portfolio.pdf"); 
+        window.open("portfolio_extern/Portfolio.pdf"); 
       }
 
       if (buttonFunctionArray[2] == 1){
-        window.open("../portfolio_extern/CV.pdf"); 
+        window.open("portfolio_extern/CV.pdf"); 
       }
 
       if (buttonFunctionArray[3] == 1){

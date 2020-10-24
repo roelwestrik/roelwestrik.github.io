@@ -8,12 +8,11 @@ function mainFFT(){
   for (var i=0; i<=11; i++){
     XCoordinatesSetup[i]=(MainRadius/2-offset)*sin((i*TWO_PI)/12);
     YCoordinatesSetup[i]=(MainRadius/2-offset)*-cos((i*TWO_PI)/12);
+
+    TextLocX[i]=(MainRadius/2+offset*2)*sin((i*TWO_PI)/12);
+    TextLocY[i]=(MainRadius/2+offset*2)*-cos((i*TWO_PI)/12);
   }
 
-  for (var j=0; j<=11; j++){
-    TextLocX[j]=(MainRadius/2+offset*2)*sin((j*TWO_PI)/12);
-    TextLocY[j]=(MainRadius/2+offset*2)*-cos((j*TWO_PI)/12);
-  }
 
   //==================FFT ANALYSIS=====================//
   for (var i=0; i<=11; i++){
@@ -106,7 +105,7 @@ function mainFFT(){
   PointerPosX = arrayPointerPosX.reduce(getSum) / arrayPointerPosX.length;
   PointerPosY = arrayPointerPosY.reduce(getSum) / arrayPointerPosY.length;
 
-  anglePointer = atan2(PointerPosX - 0, PointerPosY - 0);
+  anglePointer = atan2(PointerPosX, PointerPosY);
   
   //==================GET CHASER=====================//
   let dX = PointerPosX - chaserPosX;
@@ -118,7 +117,7 @@ function mainFFT(){
   chaserPosX = chaserPosX + chaserSpeedX;
   chaserPosY = chaserPosY + chaserSpeedY;
 
-  angleChaser = atan2(chaserPosX - 0, chaserPosY - 0);
+  angleChaser = atan2(chaserPosX, chaserPosY);
 
   //==================GET KEY=====================//
   arrayChaserPosX.push(chaserPosX);
@@ -132,7 +131,7 @@ function mainFFT(){
   KeyPosX = arrayChaserPosX.reduce(getSum) / arrayChaserPosX.length;
   KeyPosY = arrayChaserPosY.reduce(getSum) / arrayChaserPosY.length;
 
-  angleKey = atan2(KeyPosX - 0, KeyPosY - 0);
+  angleKey = atan2(KeyPosX, KeyPosY);
 
   //==================GET BRIGHTNESS=====================//
   arrayBri.push(Bri);
