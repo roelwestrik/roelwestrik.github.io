@@ -1,0 +1,10 @@
+body {
+  background-color: black;
+} 
+
+p,h1,a {
+  color: white;
+  text-decoration: none;
+
+}
+
